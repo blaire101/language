@@ -35,4 +35,4 @@ v4.4.0
 ➜  ~
 ```
 
-(more-info_runoob)[http://www.runoob.com/nodejs/nodejs-npm.html]
+[more-info_runoob](http://www.runoob.com/nodejs/nodejs-npm.html)
