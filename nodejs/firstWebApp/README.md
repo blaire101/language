@@ -1,6 +1,6 @@
-## Nodejs server.js
+# Nodejs server.js
 
-## http helloworld webApp
+## helloworld webApp
 
 **在我们创建 Node.js 第一个 "Hello, World!" 应用前，让我们先了解下 Node.js 应用是由哪几部分组成的:**
 
@@ -16,3 +16,23 @@
 ```nodejs
 var http = require("http");
 ```
+
+# NPM Brief Introduce
+
+**NPM 是随同NodeJS一起安装的包管理工具，能解决NodeJS代码部署上的很多问题，常见的使用场景有以下几种:**
+
+ - 允许用户从NPM服务器下载别人编写的第三方包到本地使用。
+ - 允许用户从NPM服务器下载并安装别人编写的命令行程序到本地使用。
+ - 允许用户将自己编写的包或命令行程序上传到NPM服务器供别人使用。
+
+由于新版的nodejs已经集成了npm，所以之前npm也一并安装好了。同样可以通过输入 "npm -v" 来测试是否成功安装。命令如下，出现版本提示表示安装成功:
+
+```nodejs
+➜  ~ node -v
+v4.4.0
+➜  ~ npm -v
+2.14.20
+➜  ~
+```
+
+(more-info_runoob)[http://www.runoob.com/nodejs/nodejs-npm.html]
