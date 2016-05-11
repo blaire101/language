@@ -137,7 +137,7 @@ shuru : 5
 >>>   
 ```
 
-# Chap 2 Python Basic concept
+# Chap 2 Python Basic
 
 > 记住，Python把在程序中用到的任何东西都称为 对象 
 
@@ -152,6 +152,61 @@ shuru : 5
 >>>
 ```
 
-## 运算符与表达式
+## Operators and Expression
 
 [operator precedence](http://www.kuqin.com/abyteofpython_cn/ch05s03.html)
+
+**Expression**
+
+```python
+#!/usr/bin/python
+# Filename: expression.py
+
+length = 5
+breadth = 2
+area = length * breadth
+print 'Area is', area
+print 'Perimeter is', 2 * (length + breadth)
+```
+
+## python 控制流
+
+```python
+#!/usr/bin/python
+# Filename: while.py
+
+number = 23
+running = True
+
+while running:
+  guess = int(raw_input('Enter an integer : '))
+
+  if guess == number:
+    print 'Congratulations, you guessed it.' 
+    running = False # this causes the while loop to stop
+  elif guess < number:
+    print 'No, it is a little higher than that' 
+  else:
+    print 'No, it is a little lower than that' 
+else:
+  print 'The while loop is over.' 
+  # Do anything else you want to do here
+
+print 'Done'
+```
+
+**break, continue**
+
+```python
+#!/usr/bin/python
+# Filename: continue.py
+
+while True:
+  s = raw_input('Enter something : ')
+  if s == 'quit':
+    break
+  if len(s) < 3:
+    continue
+  print 'Input is of sufficient length'
+  # Do other kinds of processing here...
+```
