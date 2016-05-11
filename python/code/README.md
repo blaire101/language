@@ -1,4 +1,4 @@
-# Chap 1 Python Introduce
+# P1 Python Introduce
 
 python 少有的一种可以称得上即简单又功能强大的编程语言
 
@@ -137,9 +137,7 @@ shuru : 5
 >>>   
 ```
 
-# Chap 2 Python Basic
-
-> 记住，Python把在程序中用到的任何东西都称为 对象 
+# P2 Python Basic
 
 ```python
 >>> i = 5
@@ -211,7 +209,7 @@ while True:
   # Do other kinds of processing here...
 ```
 
-# Chap 3 function
+# P3 function
 
 ## local var
 
@@ -285,4 +283,37 @@ $ python func_key.py
 a is 3 and b is 7 and c is 10
 a is 25 and b is 5 and c is 24
 a is 100 and b is 5 and c is 50
+```
+
+## DocStrings
+
+```python
+# #!/usr/bin/python
+# Filename: func_doc.py
+
+def printMax(x, y):
+  '''Prints the maximum of two numbers.
+
+    The two values must be integers.'''
+  x = int(x) # convert to integers, if possible
+  y = int(y)
+
+  if x > y:
+    print x, 'is maximum'
+  else:
+    print y, 'is maximum'
+    return y
+
+printMax(3, 5)
+print printMax.__doc__
+```
+
+output
+
+```
+$ python func_doc.py
+5 is maximum
+Prints the maximum of two numbers.
+
+    The two values must be integers.
 ```
