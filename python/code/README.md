@@ -210,3 +210,79 @@ while True:
   print 'Input is of sufficient length'
   # Do other kinds of processing here...
 ```
+
+# Chap 3 function
+
+## local var
+
+```python
+#!/usr/bin/python
+# Filename: func_local.py
+
+def func(x):
+    print 'x is', x
+    x = 2
+    print 'Changed local x to', x
+
+x = 50
+func(x)
+print 'x is still', x
+```
+
+Output
+
+```Output
+$ python func_local.py
+x is 50
+Changed local x to 2
+x is still 50
+```
+
+## global var
+
+```python
+#!/usr/bin/python
+# Filename: func_global.py
+
+def func():
+  global x
+
+  print 'x is', x
+  x = 2
+  print 'Changed local x to', x
+
+x = 50
+func()
+print 'Value of x is', x
+```
+Output
+
+```output
+$ python func_global.py
+x is 50
+Changed global x to 2
+Value of x is 2
+```
+
+## func_key
+
+```python
+#!/usr/bin/python
+# Filename: func_key.py
+
+def func(a, b=5, c=10):
+  print 'a is', a, 'and b is', b, 'and c is', c
+
+  func(3, 7)
+  func(25, c=24)
+  func(c=50, a=100)
+```
+
+Output
+
+```output
+$ python func_key.py
+a is 3 and b is 7 and c is 10
+a is 25 and b is 5 and c is 24
+a is 100 and b is 5 and c is 50
+```
