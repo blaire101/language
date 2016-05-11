@@ -1,4 +1,4 @@
-# Python Introduce
+# Chap 1 Python Introduce
 
 python 少有的一种可以称得上即简单又功能强大的编程语言
 
@@ -136,3 +136,22 @@ shuru : 5
 5  
 >>>   
 ```
+
+# Chap 2 Python Basic concept
+
+> 记住，Python把在程序中用到的任何东西都称为 对象 
+
+```python
+>>> i = 5
+>>> i = i + 1
+>>> print \
+... i
+6
+>>> print i
+6
+>>>
+```
+
+## 运算符与表达式
+
+[operator precedence](http://www.kuqin.com/abyteofpython_cn/ch05s03.html)
