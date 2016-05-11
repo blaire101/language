@@ -1,4 +1,4 @@
-# P1 Python Introduce
+# Python Introduce
 
 python 少有的一种可以称得上即简单又功能强大的编程语言
 
@@ -137,7 +137,7 @@ shuru : 5
 >>>   
 ```
 
-# P2 Python Basic
+# Python Basic
 
 ```python
 >>> i = 5
@@ -209,7 +209,7 @@ while True:
   # Do other kinds of processing here...
 ```
 
-# P3 function
+# function
 
 ## local var
 
