@@ -125,7 +125,7 @@ Hello world
 >>>
 ```
 
-## input 与 raw_input 的区别
+## difference between input and raw_input
 
 ```
 >>> raw_input("shuru : ")  
@@ -167,7 +167,7 @@ print 'Area is', area
 print 'Perimeter is', 2 * (length + breadth)
 ```
 
-## python 控制流
+## python control flow
 
 ```python
 #!/usr/bin/python
