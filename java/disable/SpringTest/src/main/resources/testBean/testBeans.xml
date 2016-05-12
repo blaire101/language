@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="u" class="com.qunar.springtest.dao.impl.UserDAOImpl">
+        <property name="daoId" value="8"></property>
+        <property name="daoStatus" value="good"></property>
+    </bean>
+    <!-- 默认是单例 -->
+    <bean id="userService" class="com.qunar.springtest.service.UserService" scope="prototype">
+        <property name="userDAO"> <ref bean="u"/> </property>
+
+        <!--    <constructor-arg>
+                    <ref bean="u" />
+                </constructor-arg> -->
+    </bean>
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="users">
+	
+    <select id="select01"
+            parameterType="java.util.HashMap"
+            resultType="User">
+        <![CDATA[
+            select
+                 id,
+                 username,
+                 password,
+                 age,
+                 address
+            from 
+                users
+        ]]>
+        <where>
+            <if test="id != null">
+            		and id = #{id}
+            </if>
+        </where>
+    </select>
+    
+
+</mapper>

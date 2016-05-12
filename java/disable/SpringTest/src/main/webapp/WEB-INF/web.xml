@@ -1,0 +1,36 @@
+<web-app version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <display-name>Spring MVC Application</display-name>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:spring/dao.xml,
+            classpath:spring/service.xml
+        </param-value>
+    </context-param>
+
+    <!-- ContextLoaderListener 就是一个 ServletContextListener 它根据 contextConfigLocation 指定的配置文件启动业务层 Spring 容器 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!--
+         DispatcherServlet ： org.springframework.web.servlet.DispatcherServlet
+         DispatcherServlet 是前端控制器，用户的浏览器 web 请求会由 DispatcherServlet 分配给控制器，
+         控制器 完成处理后，接着请求会被发送给一个视图来呈现出结果
+     -->
+    <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+</web-app>
