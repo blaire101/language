@@ -1,8 +1,0 @@
-iconv -f cp936 -t utf8 000000_0 -c > f0
-
-Hungary_入门_p1274.cpp
-
-iconv -f cp936 -t utf8 SPFA-邻接表-p3259.cpp -c > SPFA-p3259.cpp
-
-iconv -f cp936 -t utf8 Contacts.txt -c > contacts
-
