@@ -6,8 +6,6 @@
 
 ## 1. 表设计
 
-### dw\_micro\_shop\_analysis\_d
-
 **商户分析表**
 
 字段 | 类型 | 示例
@@ -20,8 +18,6 @@ shop_pv | bigint(20) | 190000
 shop_uv | bigint(20) | 5000
 stat_date | date | -
 create_date | timestamp | -
-
-### dw\_micro\_shop\_product\_analysis\_d
 
 **商品分析表**
 
