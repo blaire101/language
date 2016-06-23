@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:property-placeholder location="classpath:props/db.properties" ignore-unresolvable="true"/>
+
+    <context:component-scan base-package="com.x.demo.util.spring"/>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:props/processSql.properties</value>
+                <value>classpath:props/datasource.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dataSourceFrom" class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${from.jdbc.driverClassName}"/>
+        <property name="url" value="${from.jdbc.url}"/>
+        <property name="username" value="${from.jdbc.username}"/>
+        <property name="password" value="${from.jdbc.password}"/>
+        <property name="filters" value="stat"/>
+        <property name="maxActive" value="${jdbc.pool.maxActive}"/>
+        <property name="initialSize" value="${jdbc.pool.initialSize}"/>
+        <property name="maxWait" value="${jdbc.pool.maxWait}"/>
+        <property name="minIdle" value="${jdbc.pool.minIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.pool.minEvictableIdleTimeMillis}"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc.pool.maxPoolPreparedStatementPerConnectionSize}"/>
+    </bean>
+</beans>

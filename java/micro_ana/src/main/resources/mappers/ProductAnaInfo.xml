@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.x.demo.dao.ProductAnaInfoDAO">
+
+    <insert id="addProductAnaInfo" parameterType="com.x.demo.model.ProductAnaInfo"
+            keyProperty="id">
+          insert into dw_micro_shop_product_analysis_d (
+            id,
+            shop_id,
+            product_id,
+            product_name,
+            product_pv,
+            product_uv,
+            stat_date,
+            create_date
+          ) values (
+           #{id},
+           #{shopId},
+           #{productId},
+           #{productName},
+           #{productPv},
+           #{productUv},
+           #{statDate},
+           #{createDate}
+          )
+    </insert>
+
+    <insert id="addProductAnaInfoList" parameterType="java.util.List" flushCache="true">
+        insert into dw_micro_shop_product_analysis_d (
+         id,
+         shop_id,
+         product_id,
+         product_name,
+         product_pv,
+         product_uv,
+         stat_date,
+         create_date
+        )
+        values
+        <foreach collection="list" item="u" index="index" separator=",">
+        (
+          #{u.id},
+          #{u.shopId},
+          #{u.productId},
+          #{u.productName},
+          #{u.productPv},
+          #{u.productUv},
+          #{u.statDate},
+          #{u.createDate}
+        )
+        </foreach>
+    </insert>
+</mapper>

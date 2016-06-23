@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.x.demo.dao.ShopAnaInfoDAO">
+
+    <insert id="addShopAnaInfo" parameterType="com.x.demo.model.ShopAnaInfo" flushCache="true" keyProperty="id">
+        <![CDATA[
+          insert into dw_micro_shop_analysis_d (
+            id,
+            shop_id,
+            shop_name,
+            shop_full_name,
+            shop_pv,
+            shop_uv,
+            stat_date,
+            create_date
+          ) values (
+            #{id},
+            #{shopId},
+            #{shopName},
+            #{shopFullName},
+            #{shopPv},
+            #{shopUv},
+            #{statDate},
+            #{createDate}
+          )
+        ]]>
+    </insert>
+
+    <insert id="addShopAnaInfoList" parameterType="java.util.List" flushCache="true">
+        insert into dw_micro_shop_analysis_d (
+          id,
+          shop_id,
+          shop_name,
+          shop_full_name,
+          shop_pv,
+          shop_uv,
+          stat_date,
+          create_date
+        )
+        values
+        <foreach collection="list" item="u" index="index" separator=",">
+        (
+         #{u.id},
+         #{u.shopId},
+         #{u.shopName},
+         #{u.shopFullName},
+         #{u.shopPv},
+         #{u.shopUv},
+         #{u.statDate},
+         #{u.createDate}
+        )
+        </foreach>
+    </insert>
+</mapper>
