@@ -1,6 +1,5 @@
-# micro微商埋点统计 pv、uv 工程
+# 抓取新网，批量检测域名是否被注册
 
 
 ## 背景及文档
 
-[document](http://192.168.184.10:99/backend/micro_ana/tree/master/about_doc)
