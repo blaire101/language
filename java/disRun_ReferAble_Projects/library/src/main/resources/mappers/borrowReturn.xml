@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.BorrowingDao">
+    <resultMap id="userMap" type="User">
+        <result column="id" property="id"></result>
+        <result column="user_rtx" property="userRtx"></result>
+        <result column="borrow_num" property="borrowNum"></result>
+        <result column="remain_brow_num" property="remainBrowNum"></result>
+    </resultMap>
+
+    <resultMap id="userBorrowInfo" type="User">
+        <result property="id" column="id"></result>
+        <result property="userRtx" column="userRtx"></result>
+        <result property="browTotalNum" column="browTotalNum"></result>
+        <result property="libDept" column="libDept"></result>
+        <result property="libName" column="libName"></result>
+        <result property="borrowNum" column="borrowNum"></result>
+        <result property="redecorateTotalNum" column="redecorateTotalNum"></result>
+        <collection property="resultList" ofType="BorrowedBookInfo">
+            <result property="bookId" column="bookId"/>
+            <result property="bookLib" column="bookLib"/>
+            <result property="bookName" column="bookName"/>
+            <result property="bookAuthor" column="bookAuthor"/>
+            <result property="bookPress" column="bookPress"/>
+            <result property="imageUrl" column="imageUrl"/>
+            <result property="borrowedDate" column="borrowedDate"/>
+            <result property="returnDate" column="returnDate"/>
+            <result property="redecorateNum" column="redecorateNum"/>
+            <result property="isReturned" column="isReturned"></result>
+        </collection>
+    </resultMap>
+
+    <!--统计指定用户实际已借阅数：borrowed表中为未还状态，book表中为已借出状态-->
+    <select id="countUserBorrowNumInBorrowedTable" resultType="int">
+          select count(*) from
+          borrowed
+             join user on borrowed.user_rtx = user.user_rtx
+             join book on book.book_id = borrowed.book_id
+	            where borrowed.is_return = 0
+	               and user.user_rtx = #{userRtx}
+	               and user.lib_id = #{libId}
+	               and book.lib_id = #{libId}
+	               and user.is_valid = 1
+	               and book.status = 1
+    </select>
+
+    <insert id="insertBorrowedBook"
+            parameterType="BorrowedBookInfo"
+            keyProperty="id">
+        <![CDATA[
+        insert into borrowed(
+            book_id,
+            user_rtx,
+            borrow_date,
+            return_date,
+            redecorate_num,
+            is_return
+        ) values (
+            #{bookId},
+            #{userRtx},
+            #{borrowedDate},
+            #{returnDate},
+            #{redecorateNum},
+            #{isReturned}
+        )
+        ]]>
+	</insert>
+
+    <select id="selectBookBelongManager"
+            parameterType="String"
+            resultMap="bookMapping">
+        <![CDATA[
+        select
+            book.book_id as bookID,
+            book.status as bookStatus,
+            book.lib_id as bookLib,
+            book.status as bookStatus,
+            book_info.book_name as bookName,
+            book_info.author as bookAuthor,
+            book_info.press as bookPress,
+            book_info.image_url as imageUrl
+
+            from book
+                left outer join book_info  on book.book_info_id = book_info.id
+                where book.book_id = #{bookId}
+                    and book.lib_id = #{libId}
+                    and book.status = 0
+        ]]>
+            </select>
+    <select id="selectBookById"
+            parameterType="String"
+            resultMap="bookMapping">
+        <![CDATA[
+        select
+            book.book_id as bookId,
+            book.book_info_id as bookInfoId,
+            book_info.book_name as bookName,
+            book_info.author as bookAuthor,
+            book_info.press as bookPress,
+            library.lib_name as libName,
+            book_info.image_url as imageUrl,
+            book.status as bookStatus
+
+            from book
+                left outer join book_info  on book.book_info_id = book_info.id
+                left outer join library on book.lib_id = library.id
+                where book.book_id = #{bookId} and library.status = 1 and book.lib_id = library.id
+        ]]>
+        </select>
+    <select id="getUserBorrowedBook"
+            parameterType="String"
+            resultMap="userBorrowInfo">
+        <![CDATA[
+		   select
+            user.user_rtx as userRtx,
+            user.borrow_num as borrowNum,
+            user.remain_brow_num as remainBrowNum,
+            borrowed.book_id as bookId,
+            borrowed.borrow_date as borrowedDate,
+            borrowed.return_date as returnDate,
+            borrowed.redecorate_num as redecorateNum,
+            borrowed.is_return as isReturned,
+            book.lib_id as bookLib,
+            book_info.book_name as bookName,
+            book_info.author as bookAuthor,
+            book_info.press as bookPress,
+            book_info.image_url as imageUrl
+            from user
+               left outer join borrowed on user.user_rtx = borrowed.user_rtx
+               left outer join book  on borrowed.book_id = book.book_id
+               left outer join book_info  on book.book_info_id = book_info.id
+               where user.lib_id = book.lib_id and user.lib_id = #{libId}
+                          and user.user_rtx = #{userRtx}
+                          and borrowed.is_return = 0
+                          and user.is_valid = 1
+                          and book.status = 1
+        ]]>
+    </select>
+
+    <!--只能查询到管理员状态为1的记录-->
+    <select id="getUserInfo"
+            parameterType="String"
+            resultMap="userMap">
+        <![CDATA[
+        select
+            *
+            from user
+                  where user_rtx=#{userRtx}
+                  and lib_id = #{libId}
+                  and is_valid = 1
+        ]]>
+    </select>
+    <select id="getAllBorrowedBook"
+            parameterType="String"
+            resultType="BorrowedBookInfo">
+        <![CDATA[
+        select
+            borrowed.id as id,
+            borrowed.book_id as bookId,
+            borrowed.user_rtx as userRtx,
+            borrowed.borrow_date as borrowedDate,
+            borrowed.return_date as returnDate,
+            borrowed.redecorate_num as redecorateNum,
+            borrowed.is_return as isReturned,
+            book.lib_id as bookLib,
+            book_info.book_name as bookName,
+            book_info.author as bookAuthor,
+            book_info.press as bookPress,
+            book_info.image_url as imageUrl
+            from borrowed
+                left outer join book  on borrowed.book_id = book.book_id
+                left outer join book_info  on book.book_info_id = book_info.id
+                left outer join admin on book.lib_id = admin.lib_id
+
+            where borrowed.is_return = #{isReturn}
+                and admin.user_rtx = #{managerRtx}
+                and admin.status = 1
+                and borrowed.is_return = 0
+                and book.status = 1
+        ]]>
+        </select>
+
+    <select id="getBorrowedUser"
+            resultType="java.lang.String">
+         select user_rtx
+             from borrowed
+                where book_id = #{bookId}
+                    and  is_return = #{isReturned}
+        </select>
+    <select id="getUserHasBorrowNum"
+            resultType="Integer">
+        select borrow_num
+            from user
+            where lib_id = #{libId}
+                and user_rtx = #{userRtx}
+                and is_valid = 1
+        </select>
+
+    <select id="checkManagerRight"
+            resultType="Integer">
+        <![CDATA[
+       select id
+            from book
+            where book_id = #{bookId}
+               and lib_id = #{libId}
+               and status = #{bookStatus}
+        ]]>
+    </select>
+
+    <update id="updateUserBorrowNumInfo"
+            parameterType="int">
+        update
+        user
+        <set>
+            <if test="borrowNum != null">
+                borrow_num = #{borrowNum},
+            </if>
+        </set>
+        where
+        user_rtx=#{userRtx} and lib_id = #{libId}
+    </update>
+
+    <select id="getManagerLibId"
+            parameterType="String"
+            resultType="int">
+        <![CDATA[
+        select
+           lib_id
+           from admin
+           where user_rtx = #{managerRtx}
+        ]]>
+    </select>
+
+    <update id="updateBorrowedBookIsReturn">
+        update borrowed
+        set is_return = #{isReturn}
+        where book_id = #{bookId}
+    </update>
+
+    <insert id="insertUserInfoToUserTable"
+            parameterType="User"
+            keyProperty="id">
+        <![CDATA[
+        insert into user
+        (
+           user_rtx,
+           borrow_num,
+           remain_brow_num,
+           lib_id
+           )
+            values (
+            #{userRtx},
+            #{borrowNum},
+            #{remainBrowNum},
+            #{libId}
+        )
+
+
+
+        ]]>
+    </insert>
+
+    <select id="getUserBorrowedBookList"
+            parameterType="String"
+            resultMap="userBorrowInfo">
+    <![CDATA[
+        select
+            user1.id as id,
+            user1.user_rtx as userRtx,
+            user1.borrow_num as borrowNum,
+            borrowed.book_id as bookId,
+            borrowed.borrow_date as borrowedDate,
+            borrowed.return_date as returnDate,
+            borrowed.redecorate_num as redecorateNum,
+            borrowed.is_return as isReturned,
+            book.lib_id as bookLib,
+            book_info.book_name as bookName,
+            book_info.author as bookAuthor
+            from user user1
+               left outer join borrowed on user1.user_rtx = borrowed.user_rtx
+               left outer join book on borrowed.book_id = book.book_id
+               left outer join book_info on book.book_info_id = book_info.id
+               where user1.user_rtx = #{userRtx} and user1.lib_id = book.lib_id and book.status=1 and borrowed.is_return=0 and user1.is_valid=1 and user1.borrow_num>0
+        ]]>
+    </select>
+    <select id="getUserBorrowedOtherInfo"
+            parameterType="String"
+            resultMap="userBorrowInfo">
+        <![CDATA[
+        select
+            user1.id as id,
+            user1.user_rtx as userRtx,
+            user1.borrow_num as borrowNum,
+            system_param.borrow_total_num as browTotalNum,
+            system_param.redecorate_num as redecorateTotalNum,
+            library.lib_dept as libDept,
+            library.lib_name as libName
+            from user user1
+               left outer join borrowed on user1.user_rtx = borrowed.user_rtx
+               left outer join library on user1.lib_id = library.id
+               left outer join system_param on user1.lib_id = system_param.lib_id
+               where user1.user_rtx = #{userRtx} and user1.is_valid=1 and user1.borrow_num>0 and borrowed.is_return=0 and library.status=1 and system_param.status=1
+        ]]>
+    </select>
+
+
+    <select id="fetchBorrowedCountOfLib"
+            resultType="int">
+        select count(*)
+        from borrowed a
+            left outer join book b on a.book_id = b.book_id
+            <if test=" managerRtx != null and managerRtx != '' ">
+                left outer join admin cc on b.lib_id = cc.lib_id
+            </if>
+            where
+                a.is_return = 0
+                and b.status = 1
+                <if test="managerRtx != null and managerRtx != '' ">
+                    and cc.user_rtx = #{managerRtx}
+                    and cc.status = 1
+                </if>
+                <if test="libId != null">
+                    and b.lib_id = #{libId}
+                </if>
+
+
+    </select>
+
+    <resultMap id="bookMapping" type="Book" autoMapping="true">
+        <id column="id" property="id"></id>
+        <result column="bookId" property="bookId"></result>
+        <result column="bookName" property="bookName"></result>
+        <result column="bookAuthor" property="bookAuthor"></result>
+        <result column="bookStatus" property="bookStatus"></result>
+        <result column="bookPress" property="bookPress"></result>
+        <result column="imageUrl" property="imageUrl"></result>
+        <result column="libName" property="libName"></result>
+        <result column="bookInfoId" property="bookInfoId"></result>
+    </resultMap>
+
+    <!-- hang.gao查询可续借次数 -->
+    <select id="selectRedecoratedCount" resultType="java.lang.Integer">
+		select
+		redecorate_num from borrowed where book_id = #{book} and is_return=0
+	</select>
+
+    <!-- hang.gao减小可续借的次数 -->
+    <update id="increaseRedecorateCount">
+		update borrowed set redecorate_num =
+		redecorate_num + 1, return_date = #{returnDate} where book_id =
+		#{book} and is_return=0
+	</update>
+
+    <select id="selectBorrowedBookReturnDate" resultType="java.sql.Date">
+		select
+		return_date from borrowed where book_id = #{book} and is_return=0
+	</select>
+</mapper>

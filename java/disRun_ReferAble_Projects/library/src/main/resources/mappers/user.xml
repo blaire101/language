@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.UserDao">
+
+    <!--通过rtx获得一个user-->
+    <select id="getUserByRtx" parameterType="java.util.HashMap"
+            resultType="User">
+        <![CDATA[
+         select
+            id,
+            user_rtx as userRtx,
+            user_name as userName,
+            user_dept as userDept
+
+         from
+            user_login
+          ]]>
+          <where>
+              user_rtx = #{userRtx}
+          </where>
+    </select>
+    <!--当有一个新的员工的时候，插入一条新员工信息-->
+    <insert id="insertUser" parameterType="java.util.List">
+            <![CDATA[
+         insert into user_login
+            (
+              user_rtx,
+              user_name,
+              user_dept
+            )
+            ]]>
+            values
+            <foreach collection="list" item="user" index="index" separator=",">
+                (
+                  #{user.userRtx},
+                  #{user.userName},
+                  #{user.userDept}
+                )
+            </foreach>
+    </insert>
+
+    <!--全信息插入一天员工信息 -->
+    <insert id="insertUserAllInfo">
+        <![CDATA[
+         insert into user_login
+            (
+              user_rtx
+            )
+            ]]>
+        values
+            (
+            #{userRtx}
+            )
+
+    </insert>
+
+    <!--更新员工信息-->
+    <update id="updateUser" >
+
+         update
+            user_login
+           <set>
+               user_name=#{user.userName},
+               user_dept=#{user.userDept}
+           </set>
+
+        <where>
+            user_rtx=#{user.userRtx}
+
+        </where>
+
+    </update>
+
+    <!--员工登录-->
+    <update id="loginUser" >
+        update
+          user_login
+        <set>
+            token=#{token}
+        </set>
+
+        <where>
+            user_rtx=#{userRtx}
+
+        </where>
+    </update>
+
+    <!--查看员工是否登录-->
+    <select id="checkUserLogin" resultType="java.lang.String">
+        select
+         user_rtx as userRtx
+        from
+          user_login
+        <where>
+            token=#{token}
+        </where>
+    </select>
+
+
+    <select id="fetchAllStaffs" resultType="User">
+        select
+          user_rtx as userRtx
+        from
+          user_login
+    </select>
+</mapper>

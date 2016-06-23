@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+<!-- 配置注解扫描 -->
+<!---->
+
+<!-- 自动扫描的包名 -->
+<!--<context:component-scan base-package="com.qunar.fresh.librarysystem" />-->
+
+<!-- Spring定时器注解开关-->
+<task:annotation-driven />
+
+    <bean id="taskManager" class="com.qunar.fresh.librarysystem.email.TaskManager"></bean>
+    <bean id="updateStaff" class="com.qunar.fresh.librarysystem.service.impl.UserTaskService"></bean>
+
+    <task:scheduled-tasks>
+        <!--  -->
+        <task:scheduled ref="taskManager" method="dealReminderExpiresUser" cron="0 30 10 ? * *"/>
+        <task:scheduled ref="updateStaff" method="updateStaff" cron="0 30 3 ? * *"/>
+    </task:scheduled-tasks>
+
+
+
+
+</beans>

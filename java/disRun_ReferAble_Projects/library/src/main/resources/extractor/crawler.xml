@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 加载crawler -->
+    <context:component-scan base-package="com.qunar.fresh.librarysystem.crawler"/>
+    <context:property-placeholder location="classpath:crawler.properties"/>
+    <bean name="resourceAccess" class="com.qunar.fresh.librarysystem.io.CachedResourceAccess">
+        <constructor-arg index="0">
+            <bean name="resourceAccess" class="com.qunar.fresh.librarysystem.io.UrlResourceAccess">
+                <property name="resourceLoader">
+                    <bean class="org.springframework.core.io.DefaultResourceLoader"></bean>
+                </property>
+                <property name="resourceStorePath" value="${crawler.resourceStorePath}"></property>
+                <property name="baseResourceAccessUrl" value="${crawler.baseResourceAccessUrl}"></property>
+            </bean>
+        </constructor-arg>
+        <property name="cacheSize" value="50"/>
+    </bean>
+    <bean name="webCrawler" class="com.qunar.fresh.librarysystem.crawler.BookCrawlerImpl">
+    	<property name="resourceAccess" ref="resourceAccess"></property>
+    	<property name="searchUrl" value="${crawler.searchUrl}"></property>
+    	<property name="bookBaseUrl" value="${crawler.bookBaseUrl}"></property>
+    	<property name="urlEncoding" value="${crawler.urlEncoding}"></property>
+    </bean>
+</beans>

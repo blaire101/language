@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.LogDao">
+
+    <!--插入一条日志-->
+    <insert id="insertLog"
+            parameterType="LogInfo">
+        <![CDATA[
+
+            insert into log
+            (
+               operation_type,
+               create_time,
+               operator_rtx,
+               lib_id,
+               info
+            ) values (
+               #{operationType,javaType=OperationType, jdbcType=TINYINT},
+               #{createTime},
+               #{operatorRtx},
+               #{libId},
+               #{info}
+            )
+
+
+        ]]>
+    </insert>
+
+    <!--得到一定时间内的日志-->
+    <select id="fetchLogInfoList"
+            resultType="LogInfo">
+         <![CDATA[
+
+
+            select
+
+               id,
+               operation_type as operationType,
+               create_time as createTime,
+               operator_rtx as operatorRtx,
+               lib_id as libId,
+               info
+
+            from
+              log
+
+            ]]>
+            <where>
+                <if test="logInfo.libId !=0">
+                    lib_id=#{logInfo.libId}
+                </if>
+                and
+                operation_type in
+                <foreach collection="list" open="(" separator="," close=")" item="item">
+                    #{item}
+                </foreach>
+                and
+                create_time between
+                #{logInfo.createTime} and #{endTime}
+                order by create_time desc
+
+            </where>
+
+    </select>
+
+    <!--查看一共有多少条日志-->
+    <select id="countLogInfo"
+            resultType="java.lang.Integer">
+         <![CDATA[
+            select
+              count(*)
+            from
+              log
+            ]]>
+            <where>
+                <if test="logInfo.libId !=0">
+                    lib_id=#{logInfo.libId}
+                </if>
+                and
+                operation_type=#{logInfo.operationType,javaType=OperationType, jdbcType=TINYINT} and
+                create_time between
+                #{logInfo.createTime} and #{endTime}
+                order by create_time asc
+            </where>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="com.qunar.fresh.librarysystem.service"/>
+    <context:component-scan base-package="com.qunar.fresh.librarysystem.Utils"/>
+    <!-- 加载Service -->
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <bean name="userService" class="com.qunar.fresh.librarysystem.service.impl.UserServiceImpl">
+        <property name="roleUrlMap">
+            <map>
+                <entry key="reader" value="/"/>
+                <entry key="admin" value="/admin.jsp"/>
+                <entry key="superAdmin" value="/superAdmin.jsp"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="systemService" class="com.qunar.fresh.librarysystem.service.impl.SystemServiceImp">
+        <property name="arrayParamInsert">
+            <list>
+                <value>添加可借阅天数:</value>
+                <value>添加可借阅本数:</value>
+                <value>添加可续借天数:</value>
+                <value>添加可续借次数:</value>
+                <value>添加到期提醒:</value>
+            </list>
+        </property>
+        <property name="arrayParamUpdate">
+            <list>
+                <value>可借阅天数更新:</value>
+                <value>可借阅本数更新:</value>
+                <value>可续借天数更新:</value>
+                <value>可续借次数更新:</value>
+                <value>到期提醒更新:</value>
+            </list>
+        </property>
+        <property name="arrayParamString">
+            <list>
+                <value>browPeriod</value>
+                <value>browTotalNum</value>
+                <value>redecPeriod</value>
+                <value>redecCount</value>
+                <value>remindTime</value>
+            </list>
+        </property>
+        <property name="constrain">
+            <list>
+                <value>50</value>
+                <value>20</value>
+                <value>31</value>
+                <value>10</value>
+                <value>50</value>
+            </list>
+        </property>
+        <property name="SYSTEM_PARAM_NUM">
+            <value>5</value>
+        </property>
+        <property name="differenceContext">
+            <value>当前数据库系统设置信息与本次更新信息完全一致包括：可借阅天数,可节约本数,可续借天数,可续借本数,到期提醒时间;</value>
+        </property>
+    </bean>
+
+    <bean name="bookService" class="com.qunar.fresh.librarysystem.service.impl.BookServiceImpl">
+        <property name="crawlThreadSize" value="3"></property>
+    </bean>
+</beans>

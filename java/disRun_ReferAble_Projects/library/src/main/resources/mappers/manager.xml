@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.ManagerDao">
+
+    <!--获取一个图书馆下的所有管理员-->
+    <select id="fetchAllManager" resultType="Manager">
+        select
+        user_rtx as userRtx,
+        lib_id as libId,
+        status
+        from admin
+        <where>
+            lib_id=#{libId}
+            and
+            status=1
+            and
+            is_super=0;
+
+        </where>
+    </select>
+
+    <!--增加管理员-->
+    <insert id="addManager" parameterType="java.util.HashMap">
+
+        <![CDATA[
+
+            insert into admin
+            (
+               lib_id,
+               user_rtx
+            ) values (
+               #{libId},
+               #{userRtx}
+            )
+
+        ]]>
+    </insert>
+
+    <!--逻辑删除特定图书馆的一个管理员-->
+    <update id="deleteManager">
+
+        update
+        admin
+        <set>
+            status=0
+        </set>
+        where
+        lib_id=#{libId}
+        and
+        user_rtx in
+        <foreach collection="list" open="(" separator="," close=")" item="item">
+            #{item.userRtx}
+        </foreach>
+    </update>
+
+
+    <!--查看是否已经存在的管理员-->
+    <select id="fetchManager" parameterType="java.util.HashMap"
+            resultType="Manager">
+        <![CDATA[
+           select
+             lib_id as libId,
+             user_rtx as userRtx,
+             status,
+             is_super as isSuper
+           from
+             admin
+        ]]>
+        <where>
+            user_rtx=#{userRtx}
+
+            <if test="status !=null">
+                and  status=#{status}
+            </if>
+        </where>
+    </select>
+
+    <!--update manager-->
+    <update id="updateManager">
+        update admin
+        <set>
+            lib_id=#{manager.libId},
+            status=#{manager.status}
+        </set>
+        <where>
+            user_rtx=#{manager.userRtx}
+        </where>
+
+    </update>
+    <resultMap id="managerMap" type="com.qunar.fresh.librarysystem.model.Manager"
+               autoMapping="true">
+        <id column="id" property="id"></id>
+        <id column="lib_id" property="libId"></id>
+        <id column="user_rtx" property="userRtx"></id>
+        <id column="status" property="status"></id>
+        <id column="is_super" property="is_super"></id>
+    </resultMap>
+</mapper>

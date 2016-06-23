@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:property-placeholder location="classpath:searchConfig.properties"
+		ignore-unresolvable="true" />
+
+	<bean name="bookSearchEngine"
+		class="com.qunar.fresh.librarysystem.search.book.DatabaseBookSearchEngine"
+		init-method="init" autowire="byType" destroy-method="destroy">
+		<property name="indexDirectory" value="${search.index.directory}"></property>
+		<property name="recreateIndexOnStart" value="${search.index.recreateIndexOnStart}"></property>
+		<property name="analyzerFactory" ref="analyzerFactory">
+		</property>
+		<property name="databaseIter">
+			<bean class="com.qunar.fresh.librarysystem.search.db.DataBaseIterImpl">
+				<property name="dataSource" ref="dataSource"></property>
+			</bean>
+		</property>
+		<property name="queueSize" value="1"></property>
+	</bean>
+	<bean name="analyzerFactory" class="com.qunar.fresh.librarysystem.search.SmartChineseAnalyzerFactory"></bean>
+	
+</beans>

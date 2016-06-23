@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd"
+	default-autowire="byName">
+
+	<context:component-scan base-package="com.qunar.fresh.librarysystem.controller" />
+
+	<context:property-placeholder location="/WEB-INF/exception.properties" />
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+					<property name="objectMapper" ref="objectMapper"></property>
+				</bean>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean id="jspViewResolver"
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="viewClass"
+						value="org.springframework.web.servlet.view.JstlView" />
+					<property name="prefix" value="" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<!-- 输出为JSON数据 -->
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+					<property name="objectMapper" ref="objectMapper" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean name="objectMapper" class="com.qunar.fresh.librarysystem.xss.XssObjectMapper">
+		<property name="dateFormat">
+			<bean class="java.text.SimpleDateFormat">
+				<constructor-arg index="0" value="yyyy-MM-dd HH:mm:ss" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="velocityConfigurer"
+		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="resourceLoaderPath">
+			<value>/WEB-INF/vm/</value>
+		</property>
+		<property name="velocityProperties">
+			<props>
+				<prop key="input.encoding">UTF-8</prop>
+				<prop key="output.encoding">UTF-8</prop>
+				<prop key="velocimacro.library">/macro/macro.vm</prop>
+				<prop key="velocimacro.library.autoreload">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+		<property name="cache" value="true" />
+		<property name="suffix" value=".vm" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="layoutUrl" value="layout/layout.vm" />
+		<property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml" />
+	</bean>
+
+	<bean class="com.qunar.fresh.librarysystem.exception.CustomExceptionResolver">
+		<property name="defaultMessage" value="${exception.defaultExceptionMessage}"></property>
+		<property name="errorMessageMapping">
+			<map>
+				<entry key="java.io.IOException" value="${exception.ioException}"></entry>
+				<entry key="org.springframework.web.client.ResourceAccessException"
+					value="${exception.ResourceAccessException}"></entry>
+				<entry key="org.springframework.dao.DataAccessException"
+					value="${exception.dataAccessException}"></entry>
+			</map>
+		</property>
+	</bean>
+	<!-- <mvc:annotation-driven> -->
+	<!-- <mvc:message-converters> -->
+	<!-- <bean -->
+	<!-- class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> -->
+	<!-- <property name="supportedMediaTypes"> -->
+	<!-- <list> -->
+	<!-- <value>application/json;charset=utf-8</value> -->
+	<!-- </list> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+	<!-- </mvc:message-converters> -->
+	<!-- </mvc:annotation-driven> -->
+</beans>

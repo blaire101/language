@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="useGeneratedKeys" value="true"/>
+        <!-- <setting name="as" value=""/> -->
+    </settings>
+    <typeAliases>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.Book"
+                   alias="Book"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.LogInfo"
+                   alias="LogInfo"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.BookStatus"
+                   alias="BookStatus"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.Library"
+                   alias="Library"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.Manager"
+                   alias="Manager"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.OperationType"
+                   alias="OperationType"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.SystemParam"
+                   alias="SystemParam"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.User"
+                   alias="User"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.LibraryStatus"
+                   alias="LibraryStatus"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.BorrowedBookInfo"
+                   alias="BorrowedBookInfo"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.Returned"
+                   alias="Returned"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.AdminUserStatus"
+                   alias="AdminUserStatus"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.enums.OperationType"
+                   alias="OperationType"/>
+        <typeAlias type="com.qunar.fresh.librarysystem.model.User"
+                   alias="User"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="com.qunar.fresh.librarysystem.handler.CodeEnumTypeHandler"
+                     javaType="LibraryStatus"></typeHandler>
+        <typeHandler handler="com.qunar.fresh.librarysystem.handler.CodeEnumTypeHandler"
+                     javaType="AdminUserStatus"></typeHandler>
+        <typeHandler handler="com.qunar.fresh.librarysystem.handler.CodeEnumTypeHandler"
+                     javaType="OperationType"></typeHandler>
+        <typeHandler handler="com.qunar.fresh.librarysystem.handler.CodeEnumTypeHandler"
+                     javaType="BookStatus"></typeHandler>
+        <typeHandler handler="com.qunar.fresh.librarysystem.handler.CodeEnumTypeHandler"
+                     javaType="Returned"></typeHandler>
+    </typeHandlers>
+
+
+    <plugins>
+        <plugin interceptor="com.qunar.base.meerkat.orm.mybatis.support.ResultSetHandlerInterceptor"/>
+        <plugin interceptor="com.qunar.base.meerkat.orm.mybatis.support.StatementHandlerInterceptor"/>
+    </plugins>
+
+    <mappers>
+        <mapper resource="mappers/book.xml"></mapper>
+        <mapper resource="mappers/manager.xml"></mapper>
+        <mapper resource="mappers/homePage.xml"></mapper>
+        <mapper resource="mappers/library.xml"></mapper>
+        <mapper resource="mappers/category.xml"></mapper>
+        <mapper resource="mappers/log.xml"></mapper>
+        <mapper resource="mappers/borrowReturn.xml"></mapper>
+        <mapper resource="mappers/expires.xml" />
+        <mapper resource="mappers/reserve.xml" />
+        <mapper resource="mappers/SystemService.xml"/>
+        <mapper resource="mappers/user.xml"/>
+    </mappers>
+
+</configuration> 
+    

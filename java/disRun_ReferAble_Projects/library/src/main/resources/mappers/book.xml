@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.BookDao">
+	<!-- 插入新书，插入之前首先查询book_info中是否已经存在该信息 -->
+	<insert id="saveBookInfo" parameterType="com.qunar.fresh.librarysystem.model.Book"
+		keyProperty="id">
+        <![CDATA[
+          insert into book_info(
+		    book_name,
+		    author,
+		    press,
+		    intro,
+		    image_url,
+		    hot,
+		    nav_id
+          ) values (
+            #{bookName},
+            #{bookAuthor},
+            #{bookPress},
+            #{bookIntro},
+            #{imageUrl},
+            #{bookHot},
+            #{navId}
+    )
+        ]]>
+	</insert>
+
+	<!--向navigation表中添加新的分类 -->
+	<insert id="saveNav" parameterType="java.util.HashMap">
+        <![CDATA[
+          insert into navigation(
+		    title,
+		    book_type
+          ) values (
+            #{title},
+            #{bookType}
+          )
+        ]]>
+	</insert>
+
+	<!--根据页面输入的大分类和小分类及属于的图书馆得到对应分类表的id -->
+	<select id="selectBookNavId" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                id
+            from
+                navigation
+            where title=#{title}
+			and book_type=#{bookType}
+        ]]>
+	</select>
+
+	<!--首先根据输入书的书名和作者查询book_info中是否已经存在该书的信息 -->
+	<select id="selectBookInfo" parameterType="java.util.HashMap"
+		resultMap="bookMap">
+        <![CDATA[
+            select
+                id as book_info_id,
+                book_name,
+                author,
+                press,
+                intro,
+                image_url,
+                hot,
+                nav_id
+            from
+                book_info
+            where book_name=#{bookName}
+			and author=#{bookAuthor}
+			and nav_id=#{navId}
+        ]]>
+	</select>
+
+	<resultMap id="bookMap" type="com.qunar.fresh.librarysystem.model.Book"
+		autoMapping="true">
+		<id column="id" property="id"></id>
+		<id column="book_id" property="bookId"></id>
+		<id column="book_info_id" property="bookInfoId"></id>
+		<id column="book_name" property="bookName"></id>
+		<id column="author" property="bookAuthor"></id>
+		<id column="press" property="bookPress"></id>
+		<id column="intro" property="bookIntro"></id>
+		<id column="image_url" property="imageUrl"></id>
+		<id column="hot" property="bookHot"></id>
+		<id column="lib_id" property="bookLib"></id>
+		<id column="nav_id" property="navId"></id>
+	</resultMap>
+
+
+
+    <!--根据书的bookId查询book表该书的状态 -->
+    <select id="selectBookStatusByBookId" parameterType="java.util.HashMap"
+            resultType="com.qunar.fresh.librarysystem.model.enums.BookStatus">
+        <![CDATA[
+            select
+                status
+            from
+                book
+            where book_id=#{bookId}
+        ]]>
+    </select>
+
+	<!--需查询出该书所对应的book_info_id,然后向book中插入book_id,book_info_id,status(0未借) -->
+	<insert id="saveBook" parameterType="java.util.HashMap">
+        <![CDATA[
+          insert into book(
+            book_id,
+		    book_info_id,
+		    status,
+		    lib_id
+          ) values (
+            #{bookId},
+            #{bookInfoId},
+            #{bookStatus, javaType=BookStatus, jdbcType=TINYINT},
+            #{bookLib}
+          )
+        ]]>
+	</insert>
+
+	<!--根据book_id删除一本书，设置该书的status为2（删除） -->
+	<update id="updateBookStatus" parameterType="java.util.HashMap">
+		update
+		book
+		<set>
+			status=#{bookStatus, javaType=BookStatus, jdbcType=TINYINT}
+		</set>
+		<!-- no <where> only if you need to update many records -->
+		where  book_id=#{bookId}
+	</update>
+
+	<!--在删除图书之前先检查borrowed表中是否还有本书被借阅 -->
+	<select id="selectBorrowedCountByBookId" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+        <![CDATA[
+            select
+              count(*)
+            from
+              borrowed
+            where book_id=#{bookId}
+			and is_return=0
+              ]]>
+	</select>
+
+	<!--分页查询书的信息列表 -->
+	<select id="selectBookList" parameterType="java.util.HashMap"
+		resultMap="bookMap">
+        <![CDATA[
+            select
+                b.id as id,
+                book_id,
+                book_info_id,
+                book_name,
+		        author,
+		        press
+            from
+                book_info as a join book as b on a.id=b.book_info_id
+            where b.lib_id=#{bookLib}
+			and status!=2
+        ]]>
+	</select>
+
+    <!--根据书的bookId查询book表中是否已经存在该书 -->
+    <select id="selectBookCountByBookId" parameterType="java.util.HashMap"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                count(*)
+            from
+                book
+            where book_id=#{bookId}
+        ]]>
+	</select>
+
+	<!--hang.gao查询同一个book_info_id下的书的数目 -->
+	<select id="selectBookCountByBookInfo" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                count(*)
+            from
+                book
+            where  book_info_id = #{bookInfoId}
+        ]]>
+	</select>
+
+    <update id="updateHot" parameterType="int">
+        <![CDATA[
+                update book_info set hot = hot + 1 where id = #{book_info_id}
+        ]]>
+    </update>
+
+	<!--查询同一个book_info_id下的书的数目 -->
+	<select id="selectBookCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                count(*)
+            from
+                book
+        ]]>
+        <where>
+            <if test="bookInfoId != null and bookInfoId != ''">
+                book_info_id = #{bookInfoId}
+            </if>
+            <if test="bookLib != null and bookLib != ''">
+                and lib_id = #{bookLib}
+            </if>
+            and status != 2
+        </where>
+	</select>
+
+    <!--查询分类 -->
+    <select id="selectNav" parameterType="java.util.HashMap"
+            resultType="com.qunar.fresh.librarysystem.model.Category">
+        <![CDATA[
+            select distinct
+                title,book_type as bookType
+            from
+                navigation
+        ]]>
+        <where>
+            <if test="title != null and title != ''">
+                title = #{title}
+            </if>
+        </where>
+    </select>
+
+
+    <!--根据bookId查询bookInfoId -->
+    <select id="selectBookInfoIdByBookId" parameterType="java.util.HashMap"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                book_info_id
+            from
+                book
+            where book_id = #{bookId}
+        ]]>
+    </select>
+
+	<!-- hang.gao查询图书的select部分 -->
+	<sql id="select_book_sql">
+		select
+		b.book_id,
+		b.lib_id,
+		b.book_info_id,
+		bi.book_name,
+		bi.author,
+		bi.press,
+		bi.intro,
+		bi.image_url,
+		bi.id as book_info_id,
+		n.book_type,
+		l.lib_name
+		from
+		book b,
+		book_info bi,
+		library l,
+		navigation n
+	</sql>
+	<!-- hang.gao查询图书的order by部分 -->
+	<sql id="group_by_book_sql">
+		group by b.lib_id, bi.book_name
+	</sql>
+
+	<!-- 通过图书名的集合查找图书 hang.gao-->
+	<select id="selectBookByNames" resultMap="bookMapping"
+		parameterType="java.lang.String">
+		<include refid="select_book_sql"/>
+		where
+		b.book_info_id =
+		bi.id
+		and b.status != 2
+		and n.id = bi.nav_id
+		and l.id = b.lib_id
+		and
+		bi.book_name
+		in
+		<foreach collection="list" item="name" separator="," open="("
+			close=")" index="index">
+			#{name}
+		</foreach>
+		<include refid="group_by_book_sql"/>
+	</select>
+	<!-- 查询某一分类下的图书top hang.gao-->
+	<select id="selectTop" resultMap="bookMapping">
+		<include refid="select_book_sql"/>
+		where
+		bi.id =
+		b.book_info_id
+		and l.id = b.lib_id
+		<if test="type != 0">
+			and bi.nav_id=#{type}
+		</if>
+		and b.status != 2 <include refid="group_by_book_sql"/> order by
+		bi.hot desc
+	</select>
+
+	<!-- 通过图书类型查询图书 hang.gao-->
+	<select id="selectByType" resultMap="bookMapping">
+		<include refid="select_book_sql"/>
+		where
+		bi.id = b.book_info_id
+		and bi.nav_id=#{type}
+		and b.status != 2
+		and l.id = b.lib_id <include refid="group_by_book_sql"/>
+	</select>
+
+	<!-- 通过图书条码询图书 hang.gao-->
+	<select id="selectBookByBookId" resultMap="bookMapping">
+		select
+        b.status,
+        b.book_id,
+        b.lib_id,
+        bi.book_name,
+        bi.author,
+        bi.press,
+        bi.intro,
+        bi.image_url,
+        n.book_type,
+        l.lib_name
+        from
+        book b,
+        book_info bi,
+        library l,
+        navigation n
+        where
+        bi.id = b.book_info_id
+        and b.book_id=#{book_id}
+        and b.status != 2
+        and l.id = b.lib_id
+        and bi.nav_id = n.id
+	</select>
+
+	<!-- hang.gao -->
+	<select id="countBookByType" resultType="long">
+		select count(*) from (select
+        b.book_id
+        from
+        book b,
+        book_info bi,
+        library l,
+        navigation n
+        where
+        bi.id = b.book_info_id
+        and bi.nav_id = #{type}
+        and b.status != 2
+        and l.id = b.lib_id<include refid="group_by_book_sql"/>) book_count
+	</select>
+	
+	<select id="selectBookReserveCountByBookInfoAndLibrary" resultType="int">
+		select count(*) from
+		book,book_info where book_info.id = book.book_info_id and book.status
+		= 0 and book.book_info_id = #{book_info_id} and book.lib_id=#{lib_id}
+	</select>
+
+	<!-- hang.gao -->
+	<resultMap id="bookMapping" type="Book" autoMapping="true">
+		<id column="id" property="id"></id>
+		<result column="book_id" property="bookId"></result>
+		<result column="book_name" property="bookName"></result>
+		<result column="author" property="bookAuthor"></result>
+		<result column="status" property="bookStatus"></result>
+		<result column="press" property="bookPress"></result>
+		<result column="intro" property="bookIntro"></result>
+		<result column="image_url" property="imageURL"></result>
+		<result column="hot" property="bookHot"></result>
+		<result column="lib_id" property="bookLib"></result>
+		<result column="nav_id" property="navId"></result>
+		<result column="book_info_id" property="bookInfoId"></result>
+		<result column="book_type" property="bookType"></result>
+		<result column="lib_name" property="libName"></result>
+	</resultMap>
+
+    <!-- libin.chen -->
+    <!-- 查询一本书的详细信息列表 -->
+    <select id="getBookByBookId"
+            parameterType="java.lang.String"
+            resultType="java.util.Map">
+        <![CDATA[
+                select
+--                     a.id as id,
+                    book_id as bookId,
+--                     book_info_id as bookInfoId,
+                    book_name as bookName,
+                    author as bookAuthor,
+                    press as bookPress,
+                    intro as bookIntro,
+--                     nav_id as navId,
+                    title as title,
+                    book_type as bookType
+--                     a.lib_id as bookLib
+                from
+                    book join book_info join navigation on book.book_info_id=book_info.id and book_info.nav_id=navigation.id
+        ]]>
+        <where>
+            book.book_id = #{book_id}
+        </where>
+    </select>
+    <select id="getBookInfoIdByBookId"
+            parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        <![CDATA[
+                select
+                    book_info_id as bookInfoId
+                from
+                    book
+        ]]>
+        <where>
+                book_id = #{book_id}
+        </where>
+    </select>
+
+    <!-- 更新图书信息表-->
+    <update id="updateBookInfo"
+            parameterType="java.util.Map">
+
+        update
+        book_info
+        <set>
+            <if test="book_name != null and book_name != ''">
+                book_name = #{book_name},
+            </if>
+            <if test="author != null and author != ''">
+                author = #{author},
+            </if>
+            <if test="press != null and press != ''">
+                press = #{press},
+            </if>
+            <if test="intro != null and intro != ''">
+                intro = #{intro},
+            </if>
+            <if test="nav_id != null and nav_id != ''">
+                nav_id = #{nav_id}
+            </if>
+        </set>
+        where
+        id=#{id}
+    </update>
+
+
+    <update id="deleteBookOfLib" parameterType="java.util.HashMap">
+        update book
+        <set>
+            status=#{status}
+        </set>
+        <where>
+            lib_id=#{libId}
+        </where>
+    </update>
+
+    <!--获得某个分类的热度-->
+    <select id="fetchHotByNavId" resultType="java.lang.Integer">
+        select
+          sum(hot)
+        from
+          book_info
+        <where>
+            nav_id=#{navId}
+        </where>
+    </select>
+</mapper>

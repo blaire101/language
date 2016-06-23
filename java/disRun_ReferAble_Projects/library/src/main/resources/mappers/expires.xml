@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.ExpiresDao">
+
+
+    <select id="selectValidLibrary"
+            resultType="com.qunar.fresh.librarysystem.model.Library">
+        <![CDATA[
+            select
+                id as libId,
+                lib_name as libName,
+                lib_dept as libDept
+            from
+               library
+            where
+               status=1;
+        ]]>
+    </select>
+
+
+    <select id="getReminderExpiresInfo"
+            parameterType="java.lang.Integer"
+            resultType="com.qunar.fresh.librarysystem.model.ReminderInfo">
+        <![CDATA[
+            select
+                borrowed.user_rtx as userRtx,
+                borrowed.book_id as bookId,
+                book_name as bookName,
+                borrowed.return_date - curdate() as expiresDay
+            from
+                borrowed join book join book_info join system_param on borrowed.book_id=book.book_id and book.book_info_id=book_info.id
+                where borrowed.is_return=0 and book.status=1
+                    and borrowed.return_date <= system_param.remind_day + curdate()
+                    and book.lib_id=system_param.lib_id
+                    and system_param.status=1
+                    and system_param.lib_id=#{libId};
+        ]]>
+    </select>
+</mapper>

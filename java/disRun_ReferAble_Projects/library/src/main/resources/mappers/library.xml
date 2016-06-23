@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qunar.fresh.librarysystem.dao.LibraryDao">
+
+	<!--获取所有图书馆信息 -->
+	<select id="fetchAllLibrarys" resultType="Library">
+        <![CDATA[
+
+            select
+                id as libId,
+                lib_name as libName,
+                lib_dept as libDept,
+                status
+            from
+                library
+        ]]>
+        <where>
+            status=1
+        </where>
+    </select>
+
+    <!--通过libId获取一个图书馆信息-->
+    <select id="fetchLibInfo" resultType="Library" parameterType="java.util.HashMap">
+        <![CDATA[
+            select
+                id as libId,
+                lib_name as libName,
+                lib_dept as libDept,
+                create_time as createTime,
+                status
+            from
+                library
+        ]]>
+        <where>
+            <if test="libId !=null">
+
+                id=#{libId}
+            </if>
+            <if test="libDept !=null and libDept != ''">
+                and lib_dept = #{libDept}
+            </if>
+
+            <if test="libName !=null and libName != ''">
+                and lib_name = #{libName}
+            </if>
+            <if test="status !=null and status != ''">
+                and status = #{status}
+            </if>
+
+        </where>
+    </select>
+
+    <!--插入一个新的图书馆-->
+    <insert id="addOneLibrary"
+            parameterType="java.util.HashMap">
+        <![CDATA[
+            insert into library
+            (
+               lib_name,
+               lib_dept,
+               status
+            ) values (
+               #{libName},
+               #{libDept},
+               #{status,javaType=LibraryStatus, jdbcType=TINYINT}
+            )
+
+
+        ]]>
+	</insert>
+
+	<!--获取特定图书馆的数量 -->
+	<select id="libCount" parameterType="java.util.HashMap"
+		resultType="int">
+        <![CDATA[
+            select
+                count(*)
+            from
+                library
+        ]]>
+        <where>
+            <if test="libDept !=null and libDept != ''">
+                lib_dept = #{libDept}
+            </if>
+
+			<if test="libName !=null and libName != ''">
+				and lib_name = #{libName}
+			</if>
+
+			<if test="status !=null ">
+				and status = #{status,javaType=LibraryStatus, jdbcType=TINYINT}
+			</if>
+
+		</where>
+
+	</select>
+
+    <!--根据图书馆名获得图书馆id -->
+    <select id="fetchLibIdByName" parameterType="java.util.HashMap"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            select
+                id
+            from
+                library
+        ]]>
+        <where>
+            <if test="libDept !=null and libDept != ''">
+                lib_dept = #{libDept}
+            </if>
+
+            <if test="libName !=null and libName != ''">
+                and lib_name = #{libName}
+            </if>
+
+            <if test="status !=null ">
+                and status = #{status,javaType=LibraryStatus, jdbcType=TINYINT}
+            </if>
+
+        </where>
+
+    </select>
+
+	<!--逻辑删除一个图书馆 -->
+	<update id="deleteLibrary" parameterType="java.util.HashMap">
+		update
+		library
+		set
+			status=0
+		where
+		id=#{libId}
+	</update>
+
+	<!-- hang.gao通过管理员的id查询图书馆 -->
+	<select id="selectLibraryByAdmin" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select lib_id from
+		admin where user_rtx = #{userid}
+	</select>
+
+	<!-- hang.gao查询图书馆的书的借阅时长 -->
+	<select id="selectRedecoratePeriod" resultType="java.lang.Integer">
+		select redecorate_period
+		from system_param where lib_id = #{library}
+	</select>
+</mapper>

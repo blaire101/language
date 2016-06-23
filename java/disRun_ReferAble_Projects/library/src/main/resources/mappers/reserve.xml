@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qunar.fresh.librarysystem.dao.ReserveDao">
+
+    <select id="isConExistBookInfoIdAndLibId"
+            parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        <![CDATA[
+          select count(*) from book
+          where book_info_id=#{book_info_id}
+          and lib_id=#{lib_id}
+        ]]>
+    </select>
+
+    <!-- 判断该书是否在库中存在，如果存在，用户不可以预约 -->
+    <select id="isStillExistInLib"
+            parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        <![CDATA[
+          select count(*) from book
+          where book_info_id=#{book_info_id}
+          and status=0
+          and lib_id=#{lib_id}
+        ]]>
+    </select>
+    <!-- 判断该书是否被该用户预约，并且没有被处理，如果是，则用户不可以预约 -->
+    <select id="isReserved"
+            parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        <![CDATA[
+            select count(*) from reserve
+            where user_rtx=#{user_rtx}
+            and book_info_id=#{book_info_id}
+            and status=0
+            and lib_id=#{lib_id}
+        ]]>
+    </select>
+
+
+    <!-- 插入预约表 -->
+    <insert id="addReserveInfo"
+            parameterType="java.util.Map">
+        <![CDATA[
+        insert into reserve (
+             id,
+             book_info_id,
+             user_rtx,
+             status,
+             lib_id
+        ) values (
+             null,
+             #{book_info_id},
+             #{user_rtx},
+             0,
+             #{lib_id}
+        )
+    ]]>
+    </insert>
+
+    <!-- 查询图书库中，是否有符合预约表的记录 ，连查 -->
+    <select id="selectReminderReserveInfo"
+            resultType="com.qunar.fresh.librarysystem.model.ReminderInfo">
+        <![CDATA[
+            select distinct
+                reserve.id as reserveId,
+                user_rtx as userRtx,
+                book_name as bookName,
+--                 book.book_id as bookId,
+                lib_name as libName,
+                lib_dept as libDept
+            from book join book_info join reserve join library
+            on book.book_info_id=book_info.id and book.book_info_id=reserve.book_info_id
+            and reserve.lib_id=library.id and book.lib_id=reserve.lib_id and book.status=0
+            where reserve.status=0 and library.status=1
+        ]]>
+    </select>
+
+    <!-- 更新 reserve 预约表-->
+    <update id="updateReserve"
+        parameterType="java.lang.Integer">
+        update
+            reserve
+        <set>
+            status=1
+        </set>
+        where
+            id=#{id}
+    </update>
+</mapper>
