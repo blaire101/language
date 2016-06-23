@@ -34,7 +34,7 @@
 
 ## 4. 代码流程图
 
-![puv](http://.../micro_ana/raw/master/about_doc/puv.png)
+![puv](https://raw.githubusercontent.com/libean/language/master/java/micro_ana/about_doc/puv.png)
 
 
 **具体请参见上图和详细代码**

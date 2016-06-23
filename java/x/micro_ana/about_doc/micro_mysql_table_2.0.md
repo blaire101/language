@@ -1,7 +1,6 @@
-# 统计数据写入mysql文档2.0
+# micro_mysql_table
 
 ===
-
 
 > stat_date 改为 date 类型， 去掉一些不必要的字段
 
@@ -15,8 +14,8 @@
 ------- | ------- | -------
 id | bigint(20) | 1
 shop\_id | bigint(20) | 1231
-shop\_name | varchar(255) | cgm微网站
-shop\_full\_name | varchar(255) | cgm微网站测试
+shop\_name | varchar(255) | -
+shop\_full\_name | varchar(255) | -
 shop_pv | bigint(20) | 190000
 shop_uv | bigint(20) | 5000
 stat_date | date | -
@@ -31,7 +30,7 @@ create_date | timestamp | -
 id | bigint(20) | 1
 shop\_id | bigint(20) | 123109
 product\_id | bigint(20) | 6328126
-product\_name | varchar(255) | 胡椒猪肚豆芽菜汤
+product\_name | varchar(255) | -
 product_pv | bigint(20) | 10
 product_uv | bigint(20) | 5
 stat_date | date | 00:00:00
