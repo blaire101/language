@@ -20,8 +20,8 @@ public class ITuring {
         String url = "gorobbybean1";
         getUrlResult(url, Constant.COM);
 
-        for(int i = 97; i <= 122; i++) {
-            String tmp = String.valueOf((char)i);
+        for (int i = 98; i <= 122; i++) {
+            String tmp = String.valueOf((char) i);
             System.out.println("ca : " + (++ca));
 
             decur(tmp);
@@ -30,14 +30,15 @@ public class ITuring {
     }
 
     public static void decur(String s) {
-        if(s.length() == Constant.YL) {
+        if (s.length() == Constant.YL) {
             return;
         }
         String res = "";
-        for(int i = 97; i <= 122; i++) {
-            res = s + String.valueOf((char)i);
+        for (int i = 97; i <= 122; i++) {
+            res = s + String.valueOf((char) i);
 //            System.out.println(res);
             if (Constant.YL == res.length()) {
+                System.out.println("res : " + res);
                 getUrlResult(res, Constant.COM);
             }
             decur(res);
@@ -54,12 +55,12 @@ public class ITuring {
         try {
             HashMap<String, String> dataMap = new HashMap<String, String>();
             dataMap.put("top", "4");
-            Document doc = Jsoup.connect(fullUrl).header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36").data(dataMap).ignoreContentType(true).timeout(20*1000).post();
+            Document doc = Jsoup.connect(fullUrl).header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36").data(dataMap).ignoreContentType(true).timeout(20 * 1000).post();
 //            System.out.println(doc.html());
             String resHTml = doc.html();
 //            System.out.println(resHTml);
             if (resHTml.contains(":1")) {
-                System.out.println(url);
+                System.out.println(url + Constant.COM);
             }
             return doc.html();
         } catch (IOException e) {
