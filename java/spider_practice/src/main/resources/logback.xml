@@ -34,12 +34,6 @@
         </encoder>
     </appender>
 
-    <!-- logback为java中的包 -->
-    <!--将控制包下的所有类的日志的打印，但是并没用设置打印级别，所以继承他的上级<root>的日志级别-->
-    <root level="ERROR">
-        <appender-ref ref="FILE_ERROR" />
-    </root>
-
     <!--com.x.mainTest.LogbackDemo：类的全路径 -->
     <!--设置addtivity为false，将此loger的打印信息不向上级传递；-->
     <logger name="com.x.demo.util" level="INFO" additivity="false">
