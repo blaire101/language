@@ -23,6 +23,8 @@ public interface Constant {
 
     int ISTWO = 200;
 
+    int ISTT = 2;
+
     int IST = 676;
 
 

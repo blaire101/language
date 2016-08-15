@@ -33,6 +33,12 @@ public class CommonFunction {
         }
     }
 
+    public static long getSmallRandom() {
+        double x = Math.random() * 2;
+        int intervalSeconds = Integer.parseInt(new java.text.DecimalFormat("0").format(x)) + 1;
+        return (long)(intervalSeconds * Constant.MS);
+    }
+
     public static long getRandom() {
         double x = Math.random() * 5;
         int intervalSeconds = Integer.parseInt(new java.text.DecimalFormat("0").format(x)) + 2;
@@ -61,11 +67,14 @@ public class CommonFunction {
         }
     }
 
-    private static void isSleep(int ca) {
-        if (ca % Constant.ISTWO == 0) {
+    private static void isSleep(int count) {
+        if (count % Constant.ISTT == 0) {
             CommonFunction.sleepSec(CommonFunction.getRandom());
         }
-        if (ca % Constant.IST == 0) {
+        if (count % Constant.ISTWO == 0) {
+            CommonFunction.sleepSec(CommonFunction.getRandom());
+        }
+        if (count % Constant.IST == 0) {
             CommonFunction.sleepSec(CommonFunction.getRandom());
         }
     }

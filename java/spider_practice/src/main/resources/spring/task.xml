@@ -22,7 +22,7 @@
     </bean>
 
     <task:scheduled-tasks>
-        <task:scheduled ref="MicroPointAnaService" method="run" cron="0 36 15 ? * *"/>
+        <task:scheduled ref="MicroPointAnaService" method="run" cron="0 36 09 ? * *"/>
     </task:scheduled-tasks>
 
 </beans>
