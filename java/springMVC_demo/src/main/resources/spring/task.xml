@@ -17,63 +17,16 @@
     <!-- Spring定时器注解开关-->
     <task:annotation-driven/>
 
-    <bean id="exceptionShopSummaryInfoService" class="com.x.dmt.service.ExceptionShopSummaryInfoService"
-          factory-method="getInstance">
-    </bean>
-
-    <bean id="exceptionOrderInfoService" class="com.x.dmt.service.ExceptionOrderInfoService"
-          factory-method="getInstance">
-    </bean>
-
-    <bean id="alarmOrderExceptionService" class="com.x.dmt.service.AlarmExceptionOrderInfoService"
-          factory-method="getInstance">
-    </bean>
-
-    <!--(秒0-59) *(分钟0-59) *(小时0-23) *(日期1-31) *(月份1-12或是JAN-DEC) *(星期1-7或是SUN-SAT)-->
-
-    <task:scheduled-tasks>
-        <task:scheduled ref="exceptionShopSummaryInfoService" method="addExceptionShopSummaryInfo" cron="0 01 * * * ?"/>
-    </task:scheduled-tasks>
-
-    <task:scheduled-tasks>
-        <task:scheduled ref="exceptionOrderInfoService" method="addALlShopExceptionOrder" cron="0 10 * * * ?"/>
-    </task:scheduled-tasks>
-
-    <task:scheduled-tasks>
-        <task:scheduled ref="alarmOrderExceptionService" method="alertALlShopExceptionOrder" cron="0 40 * * * ?"/>
-    </task:scheduled-tasks>
-
-    <task:scheduled-tasks>
-        <task:scheduled ref="exceptionOrderInfoService" method="addVipShopExceptionOrder" cron="0 01 * * * ?"/>
-    </task:scheduled-tasks>
-
-    <task:scheduled-tasks>
-        <task:scheduled ref="alarmOrderExceptionService" method="alertVipShopExceptionOrder" cron="0 21 * * * ?"/>
-    </task:scheduled-tasks>
-
 
     <!--Data import-->
-    <bean id="dataImportService" class="com.x.dmt.service.DataImportService"
+    <bean id="dataImportService" class="com.x.demo.service.DataImportService"
           factory-method="getInstance">
     </bean>
 
     <task:scheduled-tasks>
-        <task:scheduled ref="dataImportService" method="runImportShopInfo" cron="0 01 02,08,14,20 * * ?"/>
+        <task:scheduled ref="dataImportService" method="runImportShopInfo" cron="0 01 08,14 * * ?"/>
     </task:scheduled-tasks>
 
-    <task:scheduled-tasks>
-        <task:scheduled ref="dataImportService" method="runImportStatOrderInfo" cron="0 05 02,08,14,20 * * ?"/>
-    </task:scheduled-tasks>
-
-    <!-- Recover Data -->
-
-    <!--<task:scheduled-tasks>-->
-        <!--<task:scheduled ref="dataImportService" method="runImportShopInfo" cron="0 15 13 * * ?"/>-->
-    <!--</task:scheduled-tasks>-->
-
-    <!--<task:scheduled-tasks>-->
-        <!--<task:scheduled ref="dataImportService" method="runImportStatOrderInfo" cron="0 53 17 * * ?"/>-->
-    <!--</task:scheduled-tasks>-->
 </beans>
 
 

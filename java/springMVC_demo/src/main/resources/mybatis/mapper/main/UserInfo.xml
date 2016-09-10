@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.x.demo.dao.main.UserDAO">
+
+    <select id="getUserInfoById" parameterType="java.util.Map" resultType="UserInfo">
+        <![CDATA[
+
+            SELECT
+              id as id,
+              first_name as firstName,
+              last_name as lastName,
+              age as age
+            FROM
+              user
+            WHERE id = #{id}
+
+
+        ]]>
+    </select>
+
+    <select id="getAllUserInfo" parameterType="java.util.Map" resultType="UserInfo">
+        <![CDATA[
+
+            SELECT
+              id as id,
+              first_name as firstName,
+              last_name as lastName,
+              age as age
+            FROM
+              user
+            limit 20
+        ]]>
+    </select>
+
+    <insert id="addUserInfoList" parameterType="java.util.List" flushCache="true">
+        replace into shop_exception_order (
+            id,
+            first_name,
+            last_name,
+            age,
+        )
+        values
+        <foreach collection="list" item="e" index="index" separator=",">
+            (
+            #{e.id},
+            #{e.first_name},
+            #{e.last_name},
+            #{e.age}
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>

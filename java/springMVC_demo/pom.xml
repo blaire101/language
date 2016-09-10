@@ -11,31 +11,8 @@
     <name>x_dmt Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
-    <!--sifu start address for x company-->
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>nexus</id>-->
-            <!--&lt;!&ndash; http://61.130.0.181:8081/nexus/content/groups/public &ndash;&gt;-->
-            <!--<url>http://192.168.184.6:8081/nexus/content/groups/public</url>-->
-            <!--<name>xkeshi repository</name>-->
-        <!--</repository>-->
-    <!--</repositories>-->
-    <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-            <!--<id>nexus</id>-->
-            <!--<name>Nexus</name>-->
-            <!--<url>http://192.168.184.6:8081/nexus/content/groups/public/</url>-->
-        <!--</pluginRepository>-->
-    <!--</pluginRepositories>-->
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!--config center for x company-->
-        <autoconfig.base.app>xkeshi_data_monitor</autoconfig.base.app>
-        <autoconfig.base.user_define_download_dir>src/main/resources/props</autoconfig.base.user_define_download_dir>
-        <autoconfig.version>1_0_0_0</autoconfig.version>
-        <!--config center end for x company-->
 
         <!--springframework-->
         <spring.version>4.2.2.RELEASE</spring.version>
@@ -72,68 +49,12 @@
 
         <mail.version>1.4.7</mail.version>
 
-        <commoms.codec.version>1.10</commoms.codec.version>
-
         <!--elasticsearch java api-->
         <es.version>1.7.5</es.version>
         <httpclient.version>4.5.2</httpclient.version>
 
     </properties>
 
-    <profiles>
-        <!--for x company start-->
-        <profile>
-            <!-- 开发环境 -->
-            <id>dev</id>
-            <!-- 默认激活本环境,默认为false不激活 -->
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <autoconfig.enable>true</autoconfig.enable>
-                <autoconfig.env>dev</autoconfig.env>
-                <autoconfig.version>1_0_0_0</autoconfig.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <!-- 测试环境 -->
-            <id>qa</id>
-            <properties>
-                <autoconfig.enable>true</autoconfig.enable>
-                <autoconfig.env>qa</autoconfig.env>
-                <autoconfig.version>1_0_0_0</autoconfig.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <!-- 预发布环境 -->
-            <id>prepub</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <autoconfig.enable>true</autoconfig.enable>
-                <autoconfig.env>prepub</autoconfig.env>
-                <autoconfig.version>1_0_0_0</autoconfig.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <!-- 线上环境 -->
-            <id>online</id>
-            <!-- 默认激活本环境,默认为false不激活 -->
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <autoconfig.enable>true</autoconfig.enable>
-                <autoconfig.env>online</autoconfig.env>
-                <autoconfig.version>1_0_0_0</autoconfig.version>
-            </properties>
-        </profile>
-        <!--for x company end-->
-    </profiles>
     <dependencies>
 
         <!--Spring-->
@@ -212,21 +133,6 @@
             <version>${guava.version}</version>
         </dependency>
 
-        <!--elasticsearch-->
-        <dependency>
-        <groupId>org.elasticsearch</groupId>
-        <artifactId>elasticsearch</artifactId>
-        <version>${es.version}</version>
-        </dependency>
-
-        <!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
-        </dependency>
-
-
         <!-- logback start-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -261,7 +167,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Mysql TOMCAt SERVLET JDBC - Driver-->
+        <!--Mysql SERVLET JDBC - Driver-->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -292,20 +198,6 @@
             <artifactId>mybatis-spring</artifactId>
             <version>${mybatis-spring.version}</version>
         </dependency>
-        <!-- javamail -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>${mail.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commoms.codec.version}</version>
-        </dependency>
-
 
         <!--H2-JDBC-->
         <!-- http://mvnrepository.com/artifact/com.h2database/h2 -->
@@ -397,34 +289,6 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-
-            <!--config center plugin for x company-->
-            <plugin>
-                <groupId>com.xkeshi.maven.plugins</groupId>
-                <artifactId>autoconfig-maven-plugin</artifactId>
-                <version>1.0.2</version>
-                <!--<configuration>-->
-                    <!--<server_host>disconf.ops.xkeshi.so</server_host>-->
-                    <!--<enable>${autoconfig.enable}</enable>-->
-                    <!--<version>${autoconfig.version}</version>-->
-                    <!--<app>${autoconfig.base.app}</app>-->
-                    <!--<env>${autoconfig.env}</env>-->
-                    <!--<download_dir>${autoconfig.base.user_define_download_dir}</download_dir>-->
-                    <!--<configFiles>-->
-                        <!--<configFile>mail-config.properties</configFile>-->
-                        <!--<configFile>db.properties</configFile>-->
-                        <!--<configFile>es_config.properties</configFile>-->
-                    <!--</configFiles>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>autoconfig</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            </plugin>
-            <!--config center plugin for x company end-->
         </plugins>
     </build>
 

@@ -10,7 +10,7 @@
     <context:property-placeholder location="classpath:props/db.properties" ignore-unresolvable="true"/>
 
     <!-- load dao -->
-    <context:component-scan base-package="com.x.dmt.dao"/>
+    <context:component-scan base-package="com.x.demo.dao"/>
 
     <!-- dataSource -->
     <bean id="abstractPoolDatatSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
@@ -60,15 +60,15 @@
         <property name="dataSource" ref="mainDataSource"/>
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:mybatis/mapper/main/*.xml"/>
-        <property name="typeAliasesPackage" value="com.x.dmt.model" />
+        <property name="typeAliasesPackage" value="com.x.demo.model" />
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.x.dmt.dao.main"/>
+        <property name="basePackage" value="com.x.demo.dao.main"/>
         <property name="sqlSessionFactoryBeanName" value="mainSqlSessionFactory"/>
     </bean>
 
-    <!-- ========================= rds2 data_space monitor ================================ -->
+    <!-- ========================= rds2 monitor lib ================================ -->
 
     <!-- monitor datasource -->
     <bean id="monitorDataSource" parent="abstractPoolDatatSource">
@@ -88,40 +88,12 @@
         <property name="dataSource" ref="monitorDataSource"/>
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:mybatis/mapper/monitor/*.xml"/>
-        <property name="typeAliasesPackage" value="com.x.dmt.model" />
+        <property name="typeAliasesPackage" value="com.x.demo.model" />
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.x.dmt.dao.monitor"/>
+        <property name="basePackage" value="com.x.demo.dao.monitor"/>
         <property name="sqlSessionFactoryBeanName" value="monitorSqlSessionFactory"/>
-    </bean>
-
-    <!-- ====================== rds2 stat_p2 ====================================== -->
-
-    <!-- rds2 stat_p2 datasource -->
-    <bean id="statp2DataSource" parent="abstractPoolDatatSource">
-        <property name="driverClassName" value="${statp2.jdbc.driverClassName}"/>
-        <property name="url" value="${statp2.jdbc.url}"/>
-        <property name="username" value="${statp2.jdbc.username}"/>
-        <property name="password" value="${statp2.jdbc.password}"/>
-    </bean>
-
-    <!-- monitor Transaction Manager or mybatis config -->
-    <bean id="statp2TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="statp2DataSource"/>
-    </bean>
-    <tx:annotation-driven transaction-manager="statp2TransactionManager"/>
-
-    <bean id="statp2SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="statp2DataSource"/>
-        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
-        <property name="mapperLocations" value="classpath:mybatis/mapper/statp2/*.xml"/>
-        <property name="typeAliasesPackage" value="com.x.dmt.model" />
-    </bean>
-
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.x.dmt.dao.statp2"/>
-        <property name="sqlSessionFactoryBeanName" value="statp2SqlSessionFactory"/>
     </bean>
 
 </beans>

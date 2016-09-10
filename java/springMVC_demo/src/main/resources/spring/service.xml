@@ -8,13 +8,17 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <!-- 加载 Service 的注解形式 -->
-    <context:component-scan base-package="com.x.dmt.service"/>
+    <context:component-scan base-package="com.x.demo.service"/>
 
-    <bean id="propertyLogicConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:props/es_config.properties</value>
-            </list>
-        </property>
-    </bean>
+
+
+    <!--not use-->
+    <!--<bean id="propertyLogicConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">-->
+        <!--<property name="locations">-->
+            <!--<list>-->
+                <!--<value>classpath:props/es_config.properties</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
 </beans>

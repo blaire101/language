@@ -11,7 +11,6 @@
         <param-value>
             classpath:spring/dao.xml,
             classpath:spring/service.xml,
-            classpath:spring/mail.xml,
             classpath:spring/task.xml
         </param-value>
     </context-param>
@@ -20,4 +19,20 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <!--
+     DispatcherServlet ： org.springframework.web.servlet.DispatcherServlet
+     DispatcherServlet 是前端控制器，用户的浏览器 web 请求会由 DispatcherServlet 分配给控制器，
+     控制器 完成处理后，接着请求会被发送给一个视图来呈现出结果
+    -->
+    <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
 </web-app>
