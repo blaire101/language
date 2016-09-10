@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+    <typeAliases>
+        <typeAlias type="com.x.dmt.model.ShopIdInfo" alias="ShopIdInfo"></typeAlias>
+        <typeAlias type="com.x.dmt.model.ExceptionOrderInfo" alias="ExceptionOrderInfo"></typeAlias>
+        <typeAlias type="com.x.dmt.model.ExceptionShopSummaryInfo" alias="ExceptionShopSummaryInfo"></typeAlias>
+
+        <typeAlias type="com.x.dmt.model.EtlShopInfo" alias="EtlShopInfo"></typeAlias>
+        <typeAlias type="com.x.dmt.model.EtlStatOrderInfo" alias="EtlStatOrderInfo"></typeAlias>
+    </typeAliases>
+</configuration>

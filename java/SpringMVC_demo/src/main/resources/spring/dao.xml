@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:property-placeholder location="classpath:props/db.properties" ignore-unresolvable="true"/>
+
+    <!-- load dao -->
+    <context:component-scan base-package="com.x.dmt.dao"/>
+
+    <!-- dataSource -->
+    <bean id="abstractPoolDatatSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!-- init maxActive, minIdle -->
+        <property name="initialSize" value="${jdbc.pool.initialSize}"/>
+        <property name="minIdle" value="${jdbc.pool.minIdle}"/>
+        <property name="maxActive" value="${jdbc.pool.maxActive}"/>
+        <!-- get connected wait timeout -->
+        <property name="maxWait" value="${jdbc.pool.maxWait}"/>
+        <!-- How long before the interval detection, detection need to close the idle connection, the unit is in milliseconds -->
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.timeBetweenEvictionRunsMillis}"/>
+        <!-- The minimum survive time in a pool. the unit is millisecond -->
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.pool.minEvictableIdleTimeMillis}"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <!-- open PSCache，contection PSCache's size-->
+        <!--<property name="poolPreparedStatements" value="${jdbc.pool.preparedStatements}"/>-->
+        <!-- monitoring statistical interception filters -->
+        <property name="filters" value="${jdbc.pool.filters}"/>
+        <property name="connectProperties">
+            <props>
+                <!--<prop key="druid.stat.logSlowSql">${druid.stat.logSlowSql}</prop>-->
+                <!--<prop key="druid.stat.mergeSql">${druid.stat.mergeSql}</prop>-->
+            </props>
+        </property>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.pool.maxPoolPreparedStatementPerConnectionSize}"/>
+    </bean>
+
+    <!-- ========================= rds1 main datasource ================================ -->
+
+    <bean id="mainDataSource" parent="abstractPoolDatatSource">
+        <property name="driverClassName" value="${main.jdbc.driverClassName}"/>
+        <property name="url" value="${main.jdbc.url}"/>
+        <property name="username" value="${main.jdbc.username}"/>
+        <property name="password" value="${main.jdbc.password}"/>
+    </bean>
+    <!-- main Transaction Manager or mybatis config -->
+
+    <bean id="mainTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="mainDataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="mainTransactionManager"/>
+
+    <bean id="mainSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="mainDataSource"/>
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mybatis/mapper/main/*.xml"/>
+        <property name="typeAliasesPackage" value="com.x.dmt.model" />
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.x.dmt.dao.main"/>
+        <property name="sqlSessionFactoryBeanName" value="mainSqlSessionFactory"/>
+    </bean>
+
+    <!-- ========================= rds2 data_space monitor ================================ -->
+
+    <!-- monitor datasource -->
+    <bean id="monitorDataSource" parent="abstractPoolDatatSource">
+        <property name="driverClassName" value="${monitor.jdbc.driverClassName}"/>
+        <property name="url" value="${monitor.jdbc.url}"/>
+        <property name="username" value="${monitor.jdbc.username}"/>
+        <property name="password" value="${monitor.jdbc.password}"/>
+    </bean>
+
+    <!-- monitor Transaction Manager or mybatis config -->
+    <bean id="monitorTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="monitorDataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="monitorTransactionManager"/>
+
+    <bean id="monitorSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="monitorDataSource"/>
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mybatis/mapper/monitor/*.xml"/>
+        <property name="typeAliasesPackage" value="com.x.dmt.model" />
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.x.dmt.dao.monitor"/>
+        <property name="sqlSessionFactoryBeanName" value="monitorSqlSessionFactory"/>
+    </bean>
+
+    <!-- ====================== rds2 stat_p2 ====================================== -->
+
+    <!-- rds2 stat_p2 datasource -->
+    <bean id="statp2DataSource" parent="abstractPoolDatatSource">
+        <property name="driverClassName" value="${statp2.jdbc.driverClassName}"/>
+        <property name="url" value="${statp2.jdbc.url}"/>
+        <property name="username" value="${statp2.jdbc.username}"/>
+        <property name="password" value="${statp2.jdbc.password}"/>
+    </bean>
+
+    <!-- monitor Transaction Manager or mybatis config -->
+    <bean id="statp2TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="statp2DataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="statp2TransactionManager"/>
+
+    <bean id="statp2SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="statp2DataSource"/>
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mybatis/mapper/statp2/*.xml"/>
+        <property name="typeAliasesPackage" value="com.x.dmt.model" />
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.x.dmt.dao.statp2"/>
+        <property name="sqlSessionFactoryBeanName" value="statp2SqlSessionFactory"/>
+    </bean>
+
+</beans>

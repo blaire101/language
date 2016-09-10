@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.x.dmt.dao.statp2.EtlStatOrderInfoDAO">
+
+    <select id="getEtlStatOrderInfo" parameterType="java.util.Map" resultType="EtlStatOrderInfo">
+        <![CDATA[
+         SELECT
+            so.id as id,
+            so.businessType as businessType,
+            so.businessId as businessId,
+            so.shopId as shopId,
+            so.merchantId as merchantId,
+            so.orderAmount as orderAmount,
+            so.transactionAmount as transactionAmount,
+            so.statDate as statDate,
+            so.createdTime as createdTime,
+            s.name AS name,
+            s.fullName as fullName,
+            c.name AS category,
+            s.address as address,
+            s.cityCode as cityCode,
+            p.latitude as latitude,
+            p.longitude as longitude,
+            si.enableBES as enableBES,
+            si.enableCash as enableCash
+        FROM
+         (SELECT
+             *
+          FROM
+            stat_order
+          WHERE
+            statDate >= #{start_date} and statDate <= #{end_date} and orderAmount > 0
+          ) so
+        LEFT JOIN
+          shop s
+        ON so.businessId = s.id
+        LEFT JOIN
+          (select DISTINCT foreignId, latitude, longitude from position) p
+        ON s.id = p.foreignId
+        LEFT JOIN
+          category c
+        ON s.category_id = c.id
+        LEFT JOIN
+          shopinfo si
+        ON so.businessId = si.id;
+        ]]>
+    </select>
+</mapper>

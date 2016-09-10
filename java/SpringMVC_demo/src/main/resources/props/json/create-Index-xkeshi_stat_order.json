@@ -1,0 +1,89 @@
+{
+  "mappings": {
+    "xkeshi_stat_order": {
+      "properties": {
+        "transactionAmount": {
+          "type": "double"
+        },
+        "geo": {
+          "type": "geo_point"
+        },
+        "createdTime": {
+          "format": "dateOptionalTime",
+          "type": "date"
+        },
+        "enableCash": {
+          "type": "long"
+        },
+        "s_enableCash": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "cityCode": {
+          "type": "string"
+        },
+        "businessType": {
+          "type": "string"
+        },
+        "statDate": {
+          "format": "dateOptionalTime",
+          "type": "date"
+        },
+        "liveness": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "id": {
+          "type": "long"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "s_enableBES": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "category": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "orderAmount": {
+          "type": "long"
+        },
+        "address": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "shopId": {
+          "type": "long"
+        },
+        "name": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "merchantId": {
+          "type": "long"
+        },
+        "longitude": {
+          "type": "double"
+        },
+        "systemId": {
+          "type": "long"
+        },
+        "latitude": {
+          "type": "double"
+        },
+        "businessId": {
+          "type": "long"
+        },
+        "fullName": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "enableBES": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}

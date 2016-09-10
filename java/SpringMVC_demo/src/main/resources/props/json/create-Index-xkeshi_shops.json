@@ -1,0 +1,59 @@
+{
+  "mappings": {
+    "xkeshi_shops": {
+      "properties": {
+        "transactionAmount": {
+          "type": "double"
+        },
+        "geo": {
+          "type": "geo_point"
+        },
+        "enableCash": {
+          "type": "long"
+        },
+        "s_enableCash": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "liveness": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "id": {
+          "type": "long"
+        },
+        "s_enableBES": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "category": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "orderAmount": {
+          "type": "long"
+        },
+        "name": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "longitude": {
+          "type": "double"
+        },
+        "latitude": {
+          "type": "double"
+        },
+        "fullName": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "enableBES": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}
