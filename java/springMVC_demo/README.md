@@ -75,7 +75,7 @@ drwxr-xr-x 4 hp staff   136 Sep 10 13:30 src/
 
 > 当然你也可以通过 IDEA -> Maven Projects -> Plugins -> jetty:run 启动 (或者 Tomcat 启动)
 
-你可以在你的浏览器分别访问一些接口，查看效果
+启动成功后，这时你可以在你的浏览器分别访问以下接口，查看效果了
 
 ```
 http://localhost:8080/
