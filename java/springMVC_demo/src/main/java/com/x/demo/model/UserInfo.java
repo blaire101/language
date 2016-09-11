@@ -2,7 +2,7 @@ package com.x.demo.model;
 
 public class UserInfo {
 
-    private String id;
+    private Long id;
     private String firstName; // name
     private String lastName;  // xing
     private Integer age;
@@ -10,7 +10,7 @@ public class UserInfo {
     public UserInfo() {
     }
 
-    public UserInfo(String id, String firstName, String lastName, Integer age) {
+    public UserInfo(Long id, String firstName, String lastName, Integer age) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -18,17 +18,21 @@ public class UserInfo {
     }
 
     public UserInfo(String firstName, String lastName, Integer age) {
-        id = null;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
     }
 
-    public String getId() {
+    public UserInfo(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

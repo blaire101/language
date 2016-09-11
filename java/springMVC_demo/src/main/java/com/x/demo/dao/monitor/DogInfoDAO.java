@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface DogDAO {  // your other dao
+public interface DogInfoDAO {  // your other dao
 
 }
 

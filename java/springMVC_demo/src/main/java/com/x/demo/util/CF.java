@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Date : 2016-07-05
- */
+/** Common Function **/
 public class CF {
 
     private static Logger logger = LoggerFactory.getLogger(CF.class);

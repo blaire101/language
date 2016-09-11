@@ -59,19 +59,15 @@
         </encoder>
     </appender>
 
-    <logger name="com.x.demo" level="ERROR" additivity="false">
+    <logger name="com.x" level="ERROR" additivity="false">
         <appender-ref ref="errorAppender"/>
     </logger>
 
     <!--设置addtivity为false，将此loger的打印信息不向上级传递；-->
-    <logger name="com.x.demo.service" level="INFO" additivity="fasle">
+    <logger name="com.x.demo" level="INFO" additivity="fasle">
         <appender-ref ref="infoAppender"/>
     </logger>
 
-    <!--设置addtivity为false，将此loger的打印信息不向上级传递；-->
-    <logger name="com.x.demo.service.DataImportService" level="INFO" additivity="fasle">
-        <appender-ref ref="infoAppenderForDataImport"/>
-    </logger>
     <!-- 注意: logger 同名情况, 级别低的,需要放在下面,否则级别高的会覆盖级别低的权限,早晨级别低的打印不出来日志 -->
 
 </configuration>

@@ -12,14 +12,4 @@ public interface Constant {
 
     String DATE_FOMMAT_YMD = "yyyy-MM-dd";
 
-    Long TIME_DIFF = 100000L;
-
-
-    Integer INSERT_ES_SIZE = 500;
-
-    /** -----   **/
-
-    Integer START_ADD_DAYS = 1;
-
-    Integer RECOVERY_ADD_DAYS = 1;
 }
