@@ -21,6 +21,7 @@
  - Spring-task
 
 > logback : 一个“可靠、通用、快速而又灵活的Java日志框架”。
+> Spring-task 编写非web程序，仅仅是后台需要定时跑的任务，经常被用到。
 
 ## 3. how to run
 
@@ -98,6 +99,8 @@ http://localhost:8080/user/getuser/2
   }
 }
 ```
+
+> 在你测试的时候，如果你想在浏览器中看到格式化后的json，请自行安装 chrome 相关的json插件等。
 
 ## 4. attentions
 
