@@ -102,9 +102,18 @@ http://localhost:8080/user/getuser/2
 
 > 在你测试的时候，如果你想在浏览器中看到格式化后的json，请自行安装 chrome 相关的json插件等。
 
-## 4. attentions
+## 4. demo desc
+
+1. 展示了前后端开发如何用json进行交互的主流方法，标志状态位与错误信息，返回结果呈现给前端，用一个 JsonResult 类来封装，同时在 web 层，用MappingJackson2HttpMessageConverter 配置，可自动将 Map\<String, Object\> 转换为 json 呈现给前端等。
+
+2. 代码编写比较规范，用了主流日志框架，将 info 与 error 日志分开打印，不吞异常。分层规范，还特意写了两个数据源如何配置的样例等。
+
+3. DAO 层不写实现，只写接口，用 Mybatis 来承接，类对象与数据库 直接自动转换识别，包含了 数据库字段下划线与java类字段驼峰标识 如何识别等。
+
+## 5. attentions
 
 > 注意： 版本控制中，涉及的敏感 库地址，用户名，密码 等 不上传。
+
 
 
 
