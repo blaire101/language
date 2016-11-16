@@ -1,0 +1,402 @@
+package com.qunar.fresh.librarysystem.dao;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.ibatis.session.RowBounds;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.qunar.fresh.librarysystem.model.Book;
+import com.qunar.fresh.librarysystem.model.BorrowedBookInfo;
+import com.qunar.fresh.librarysystem.model.LogInfo;
+import com.qunar.fresh.librarysystem.model.User;
+import com.qunar.fresh.librarysystem.model.enums.OperationType;
+import com.qunar.fresh.librarysystem.model.enums.Returned;
+
+//import com.qunar.fresh.librarysystem.dao.impl.BorrowingDaoImpl;
+
+/**
+ * Created with IntelliJ IDEA. User: feiyan.shan Date: 14-3-28 Time: 下午4:54
+ *
+ * @author hang.gao
+ * @author feiyan.shan
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+// 不能是PowerMock等别的class，否则无法识别spring的配置文件
+@ContextConfiguration(locations = {"classpath:spring/dao.xml"})
+// 读取spring配置文件 //"classpath:spring.xml", ,"classpath:spring/service.xml"
+public class BorrowingDaoTest {
+
+    private Logger logger = LoggerFactory.getLogger(BorrowingDaoTest.class);
+    @Resource
+    private BorrowingDao borrowingDao;
+
+    @Resource
+    private UserDao userDao;
+
+    @Test
+    public void testBorrowBookInfo_should_success_insert_to_DB() {
+        BorrowedBookInfo borrowedBookInfo = new BorrowedBookInfo();
+        borrowedBookInfo.setBookId("201");
+        borrowedBookInfo.setUserRtx("feifei");
+        borrowedBookInfo.setBookName("C++");
+        borrowedBookInfo.setBookAuthor("libinchen");
+        borrowedBookInfo.setBookPress("shanghai");
+        borrowedBookInfo.setImageUrl("jjjj");
+        borrowedBookInfo.setBorrowedDate(new Date());
+        borrowedBookInfo.setReturnDate(new Date());
+        borrowedBookInfo.setRedecorateNum(3);
+        borrowedBookInfo.setReturned(Returned.NOTRETURNED);
+        Assert.assertEquals(1, borrowingDao.insertBorrowedBook(borrowedBookInfo));
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void testBorrowBookInfo_should_throw_exception() {
+        BorrowedBookInfo borrowedBookInfo = new BorrowedBookInfo();
+        borrowingDao.insertBorrowedBook(borrowedBookInfo);
+    }
+
+    @Test
+    public void testGetUserInfo_should_return_user() {
+        String userRtx = "shanfeiyan";
+        String managerRtx = "sai.liu";
+        Assert.assertNotNull(borrowingDao.getUserInfo(2, userRtx));
+    }
+
+    @Test
+    public void testGetUserInfo_should_return_null_when_user_is_null() {
+        String userRtx = null;
+        String managerRtx = "sai.liu";
+        Assert.assertNull(borrowingDao.getUserInfo(2, userRtx));
+    }
+
+    @Test
+    public void testGetUserInfo_should_return_null_when_manager_is_null() {
+        String userRtx = "shanfeiyan";
+        String managerRtx = null;
+        Assert.assertNull(borrowingDao.getUserInfo(15, userRtx));
+    }
+
+    @Test
+    public void testGetUserBorrowedBook_should_return_null_when_user_is_null() {
+        String userRtx = null;
+        String managerRtx = "feiyan.shan";
+        int libId = 2;
+        Assert.assertNull(borrowingDao.getUserBorrowedBook(libId, userRtx));
+    }
+
+    @Test
+    public void testGetUserBorrowedBook_should_return_null_when_libId_is_not_right() {
+        String userRtx = "shanfeiyan";
+        int libId = 15;
+        Assert.assertNull(borrowingDao.getUserBorrowedBook(libId, userRtx));
+    }
+
+
+    @Test
+    public void testGetUserBorrowedBook_should_return_null_when_user_is_not_in_DB() {
+        String userRtx = "shaiyan";
+        int libId = 2;
+        Assert.assertNull(borrowingDao.getUserBorrowedBook(libId, userRtx));
+    }
+
+    @Test
+    public void testGetUserBorrowedBook_should_return_user() {
+        String userRtx = "hang.gao";
+        int libId = 2;
+        Assert.assertNotNull(borrowingDao.getUserBorrowedBook(libId, userRtx));
+    }
+
+    @Test
+    public void testSelectBookBelongManager_should_return_right_book() {
+        String managerRtx = "sai.liu";
+        String bookId = "101";
+//        Book book = borrowingDao.selectBookBelongManager(managerRtx, bookId);
+//        Assert.assertNotNull(book);
+//        Assert.assertEquals(bookId, book.getBookId());
+    }
+
+    @Test
+    public void testSelectBookBelongManager_should_return_null() {
+        String managerRtx = "sai.liu";
+        String bookId = null;
+//        Book book = borrowingDao.selectBookBelongManager(managerRtx, bookId);
+//        Assert.assertNull(book);
+    }
+
+    @Test
+    public void testSelectBookById_should_return_right_book() {
+        String bookId = "101";
+        Book book = borrowingDao.selectBookById(bookId);
+        Assert.assertNotNull(book);
+        Assert.assertEquals(bookId, book.getBookId());
+    }
+
+    @Test
+    public void testSelectBookById_should_return_null() {
+        String bookId = null;
+        Book book = borrowingDao.selectBookById(bookId);
+        Assert.assertNull(book);
+    }
+
+
+    @Test
+    public void testGetAllBorrowedBook_should_return_not_empty_list_if_has_borrowed_book() {
+        String managerRtx = "sai.liu";
+        int offset = 1;
+        int limit = 2;
+        RowBounds rowBounds = new RowBounds(offset, limit);
+        List<BorrowedBookInfo> borrowedBookInfos = borrowingDao.getAllBorrowedBook(Returned.ISRETURNED, managerRtx, rowBounds);
+        Assert.assertNotNull(borrowedBookInfos);
+        Assert.assertTrue(borrowedBookInfos.size() > 0);
+    }
+
+    @Test
+    public void testGetAllBorrowedBook_should_return_empty_list_if_no_borrowed_book() {
+        String managerRtx = null;
+        int offset = 1;
+        int limit = 2;
+        RowBounds rowBounds = new RowBounds(offset, limit);
+        List<BorrowedBookInfo> borrowedBookInfos = borrowingDao.getAllBorrowedBook(Returned.ISRETURNED, managerRtx, rowBounds);
+        Assert.assertNotNull(borrowedBookInfos);
+        Assert.assertEquals(0, borrowedBookInfos.size());
+    }
+
+    @Test
+    public void testGetManagerLibId_should_return_number_bigger_than_zero_when_in_DB() {
+        String managerRtx = "sai.liu";
+        Assert.assertNotSame(0, borrowingDao.getManagerLibId(managerRtx));
+    }
+
+    @Test
+    public void testGetManagerLibId_should_return_zero_when_not_in_DB() {
+        String managerRtx = null;
+        Assert.assertEquals(null, borrowingDao.getManagerLibId(managerRtx));
+    }
+
+    @Test
+    public void testGetUserHasBorrowNum_should_return_borrowNum_if_in_DB() {
+        String userRtx = "shanfeiyan";
+        Assert.assertTrue(borrowingDao.getUserHasBorrowNum(1, userRtx) > 0);
+    }
+
+    @Test
+    public void testGetUserHasBorrowNum_should_return_null_not_in_DB() {
+        String userRtx = null;
+        Assert.assertEquals(null, borrowingDao.getUserHasBorrowNum(1, userRtx));
+    }
+
+    @Test
+    public void testCheckManagerRight_should_return_bigger_than_zero_if_has_right() {
+        String name = "sai.liu";
+        String bookId = "101";
+//        int count = borrowingDao.checkManagerRight(name, bookId);
+//        Assert.assertTrue(count > 0);
+    }
+
+    @Test
+    public void testCheckManagerRight_should_return_zero_if_has_no_right() {
+        String name = "sai.liu";
+        String bookId = "10111";
+//        int count = borrowingDao.checkManagerRight(name, bookId);
+//        Assert.assertEquals(0, count);
+    }
+
+    @Test
+    public void testUpdateUserInfo_return_bigger_than_zero_if_success() {
+        String userRtx = "shanfeiyan";
+        int borrowNum = 20;
+        int remainBorrowNum = 20;
+        int libId = 1;
+        int count = borrowingDao.updateUserInfo(userRtx, borrowNum, libId);
+        Assert.assertTrue(count > 0);
+    }
+
+    @Test
+    public void testUpdateUserInfo_return_zero_if_failed() {
+        String userRtx = "shanfeiyan";
+        int borrowNum = 20;
+        int remainBorrowNum = 20;
+        int libId = 4;
+        int count = borrowingDao.updateUserInfo(userRtx, borrowNum, libId);
+        Assert.assertEquals(0, count);
+    }
+
+    @Test
+    public void testGetManagerId_should_return_null_when_manager_is_null() {
+        String userRtx = null;
+        Assert.assertNull(null, borrowingDao.getManagerLibId(userRtx));
+    }
+
+    @Test
+    public void testGetManagerId_should_return_null_when_manager_not_in_DB() {
+        String userRtx = "liu";
+        Assert.assertEquals(null, borrowingDao.getManagerLibId(userRtx));
+    }
+
+    @Test
+    public void testGetManagerId_should_return_manager_libid_when_in_DB() {
+        String userRtx = "sai.liu";
+        int libId = borrowingDao.getManagerLibId(userRtx);
+        Assert.assertEquals(1, libId);
+        logger.error("the manager libId is {}", libId);
+    }
+
+
+    @Test
+    public void testUpdateBorrowedBookIsReturn_should_return_zero_if_bookId_is_not_right() {
+        String bookId = null;
+        Assert.assertEquals(0, borrowingDao.updateBorrowedBookIsReturn(bookId, Returned.ISRETURNED));
+    }
+
+    @Test
+//    @Ignore
+    public void testUpdateBorrowedBookIsReturn_should_return_bigger_than_zero_if_success() {
+        String bookId = "102";
+        Assert.assertTrue(borrowingDao.updateBorrowedBookIsReturn(bookId, Returned.NOTRETURNED) > 0);
+    }
+
+    @Test
+    public void testInsertLog_success() {
+        LogInfo logInfo = new LogInfo();
+        logInfo.setInfo("ddddddd");
+        logInfo.setLibId(1);
+        logInfo.setCreateTime(new Date());
+        logInfo.setOperationType(OperationType.BORROWBOOK);
+        logInfo.setOperatorRtx("sai.liu");
+        if (0 == borrowingDao.insertLog(logInfo)) {
+            logger.error("no log insert ");
+        } else {
+            logger.error("insert one log");
+        }
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void testInsertLog_failed() {
+        LogInfo logInfo = new LogInfo();
+        logInfo.setInfo("ddddddd");
+        logInfo.setLibId(1);
+        borrowingDao.insertLog(logInfo);
+    }
+
+    @Test
+    public void testGetAllBorrowedBookCount() {
+//        String managerRtx = "sai.liu";
+        String managerRtx = null;
+        int count = borrowingDao.getAllBorrowedBookCount(managerRtx);
+        logger.info("managerRtx {}   books has {}", managerRtx, count);
+    }
+
+//    /**
+//     * @author hang.gao
+//     */
+//    @Test
+//    public void testSelectRedecorateCount() {
+//    	Assert.assertEquals(1, borrowingDao.selectRedecorateCount("9787111104414"));
+//    }
+
+    //	/**
+//	 * @author hang.gao
+//	 */
+//	@Test
+//	@Rollback(true)
+//	@Transactional
+//	public void testDecreaseRedecorateCount() {
+//		int count = borrowingDao.selectRedecorateCount("9787111104414");
+//		borrowingDao.decreaseRedecorateCount("9787111104414",
+//				new java.sql.Date(System.currentTimeMillis()));
+//		int countAfterDecrease = borrowingDao.selectRedecorateCount("9787111104414");
+//		Assert.assertTrue(count - countAfterDecrease == 1);
+//	}
+//
+    public void testSelectBorrowedBookReturnDate() throws ParseException {
+        Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-01"), borrowingDao.selectBorrowedBookReturnDate("9787111104414"));
+    }
+
+    @Test
+    public void testGetUserBorrowedBookList_should_return_not_empty_list() {
+        String userRtx = "libin.chen";
+        List<User> users = borrowingDao.getUserBorrowedBookList(userRtx);
+        Assert.assertTrue(users.size() > 0);
+    }
+
+    @Test
+    public void testGetUserBorrowedBookList_should_return_null_when_userRtx_is_null() {
+        String userRtx = null;
+        List<User> users = borrowingDao.getUserBorrowedBookList(userRtx);
+        Assert.assertNotNull(users);
+        Assert.assertEquals(0, users.size());
+    }
+
+    @Test
+    public void test_getUserBorrowedOtherInfo_should_return_not_empty_list() {
+        String userRtx = "libin.chen";
+        List<User> users = borrowingDao.getUserBorrowedOtherInfo(userRtx);
+        Assert.assertTrue(users.size() > 0);
+    }
+
+    @Test
+    public void test_getUserBorrowedOtherInfo_should_return_null_when_userRtx_is_null() {
+        String userRtx = null;
+        List<User> users = borrowingDao.getUserBorrowedOtherInfo(userRtx);
+        Assert.assertNotNull(users);
+        Assert.assertEquals(0, users.size());
+    }
+
+
+    @Test
+    public void testGetTotalBorrowNum_should_return_null_when_libId_not_right() {
+        int libId = 5;
+        Assert.assertNull(borrowingDao.getTotalBorrowNum(libId));
+    }
+
+
+    @Test
+    public void testGetTotalBorrowNum_should_return_right_totalBorrowNum_when_libId_is_valid() {
+        int libId = 1;
+        Assert.assertTrue(borrowingDao.getTotalBorrowNum(libId) == 30);
+    }
+
+    @Test
+    public void testGetBorrowDayNum_should_return_null_if_libId_not_right() {
+        int libId = 5;
+        Assert.assertNull(borrowingDao.getBorrowDayNum(libId));
+    }
+
+    @Test
+    public void testGetBorrowDayNum_should_return_right_borrow_day_num_if_libId_is_right() {
+        int libId = 1;
+        Assert.assertTrue(borrowingDao.getBorrowDayNum(libId) == 30);
+
+    }
+
+    @Test
+    public void testInsertUserInfoToUserTable_insert_user_success(){
+        User user = new User();
+        user.setLibId(11);
+        user.setUserRtx("feiyan.shan");
+        user.setUserName("单飞燕");
+        user.setRemainBrowNum(5);
+        user.setBorrowNum(0);
+        user.setUserDept("技术部");
+
+
+        userDao.insertUserAllInfo(user);
+        borrowingDao.insertUserInfoToUserTable(user);
+
+    }
+
+}

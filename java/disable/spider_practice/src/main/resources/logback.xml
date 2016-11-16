@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="FILE_INFO1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/data0/logs/spider_practice/logFileInfo1.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_INFO2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/data0/logs/spider_practice/logFileInfo2.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--其中appender的配置表示打印到控制台-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--com.x.mainTest.LogbackDemo：类的全路径 -->
+    <!--设置addtivity为false，将此loger的打印信息不向上级传递；-->
+    <logger name="com.x.demo.util" level="INFO" additivity="false">
+        <appender-ref ref="FILE_INFO1"/>
+        <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
+    <logger name="com.x.demo.service" level="INFO" additivity="false">
+        <appender-ref ref="FILE_INFO2"/>
+        <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
+</configuration>
