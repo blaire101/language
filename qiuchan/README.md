@@ -12,6 +12,17 @@
  4. 初步了解计算机语言发展史
  5. 初步了解 `机器学习-监督学习` 的常见套路
 
- 
+## 2017-05-23
+
+### 用盐-数据分析师
+
+ 1. SAS, SPSS, Matlab
+ 2. R 
+ 3. Python
+ 4. SQL (Mysql)
+ 5. Machine Learning (线性回归、LR、SVM...)
+ 6. Linux (Shell)
+ 7. 初步了解(Hadoop、Spark...)
+
  > www.lagou.com
 
